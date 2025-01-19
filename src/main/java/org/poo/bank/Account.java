@@ -78,28 +78,29 @@ public class Account {
         }
     }
 
-    public static void configureAccountByType(Account account, User user, CommandInput cmd) {
+    public static void configureAccountByType(Bank bank, Account account, User user, CommandInput cmd) {
         switch (cmd.getAccountType()) {
             case "savings":
                 account.setInterestRate(cmd.getInterestRate());
                 break;
             case "business":
-                configureBusinessAccount(account, user, cmd);
+                configureBusinessAccount(bank, account, user, cmd);
                 break;
             default:
                 break;
         }
     }
 
-    public static void configureBusinessAccount(Account account, User user, CommandInput cmd) {
+    public static void configureBusinessAccount(Bank bank, Account account, User user, CommandInput cmd) {
         //user.getRole().put(account.getIBAN(), "owner");
 
+        Exchange exchange = new Exchange(bank);
         account.setPlanType(user.getPlan());
         user.getEmployeeRole().put(account.getAccount(), "owner");
         //account.getAssociates().add(user);
 
 
-        double depositLimit = Exchange.findExchangeRate("RON", cmd.getCurrency()) * 500;
+        double depositLimit = exchange.findExchangeRate("RON", cmd.getCurrency()) * 500;
         account.setDepositLimit(depositLimit);
         account.setSpendingLimit(depositLimit); // Același calcul pentru spending limit
     }

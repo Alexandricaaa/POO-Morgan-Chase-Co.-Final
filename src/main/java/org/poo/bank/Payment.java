@@ -2,6 +2,7 @@ package org.poo.bank;
 
 import org.poo.fileio.CommandInput;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Payment {
@@ -122,18 +123,37 @@ public class Payment {
     }
 
     public static double cashback(CommandInput command, Commerciant commerciant, Bank bank, Account account) {
-
+        Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(bank.findUserEmailByIBAN(account.getAccount()));
         Commerciant c = Commerciant.findCommerciant(command, bank, account);
         double rate = 0.0;
         double amount = 0.0;
         if(c!=null){
             if(c.getCashbackStrategy().equals("spendingThreshold")){
-                rate = Exchange. findExchangeRate(command.getCurrency(), account.getCurrency());
+                rate = exchange. findExchangeRate(command.getCurrency(), account.getCurrency());
                 amount = threshold(account.getThresholdAmount(), user, account ) * command.getAmount();
                 return amount * rate;
             }
         }
         return 0.0;
     }
+
+    public static  double getUpgradeFee(String currentPlan, String newPlan) {
+        // Mapele pentru upgrade-uri
+        Map<String, Double> upgradeFees = new HashMap<>();
+
+        // Adăugăm taxele pentru upgrade
+        upgradeFees.put("standard_to_silver", 100.0);
+        upgradeFees.put("student_to_silver", 100.0);
+        upgradeFees.put("silver_to_gold", 250.0);
+        upgradeFees.put("standard_to_gold", 350.0);
+        upgradeFees.put("student_to_gold", 350.0);
+
+        // Formăm cheia pentru upgrade
+        String key = currentPlan.toLowerCase() + "_to_" + newPlan.toLowerCase();
+
+        // Returnăm taxa de upgrade dacă există, altfel 0
+        return upgradeFees.getOrDefault(key, 0.0);
+    }
+
 }

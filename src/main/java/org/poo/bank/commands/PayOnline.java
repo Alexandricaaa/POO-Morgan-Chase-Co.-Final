@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class PayOnline implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(command.getEmail());
         Account account = bank.findAccountByCardNumber(command.getCardNumber());
         boolean card = false;
@@ -53,9 +54,9 @@ public class PayOnline implements CommandPattern {
         }
         double cashback = Payment.cashback(command, commerciant, bank, account);
 
-        double amountInCurrency = command.getAmount() * Exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
+        double amountInCurrency = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
         double commissionInCurrency = Payment.commission(account.getPlanType(),
-                command.getAmount() * Exchange.findExchangeRate(command.getCurrency(), "RON"));
+                command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
         //double rest = amountInCurrency - commissionInCurrency;
         double amountWithDiscount = amountInCurrency * discount;
         double total = amountInCurrency - amountWithDiscount - cashback + commissionInCurrency;
@@ -80,7 +81,7 @@ public class PayOnline implements CommandPattern {
 
         if (account.getBalance() < total) {
             if (commerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                account.setBalance(account.getBalance() - command.getAmount() * Exchange.findExchangeRate(command.getCurrency(), "RON"));
+                account.setBalance(account.getBalance() - command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
             } else {
                 if (account.getNumberOfTransactions().containsKey(commerciant)) {
                     // Obține valoarea curentă
@@ -98,13 +99,15 @@ public class PayOnline implements CommandPattern {
 
         account.setBalance(account.getBalance() - total);
         Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() );
-        double gold = command.getAmount() * Exchange.findExchangeRate(command.getCurrency(), "RON");
+        double gold = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON");
         if (300 <= gold) {
             account.setGoldUpdate(account.getGoldUpdate() + 1);
         }
-        if (account.getGoldUpdate() >= 5 && account.getPlanType().equals("silver")) {
-            account.setPlanType("gold");
-            Transaction.upgradePlan(command,user,"gold");
+        if(account.getPlanType()!=null) {
+            if (account.getGoldUpdate() >= 5 && account.getPlanType().equals("silver")) {
+                account.setPlanType("gold");
+                Transaction.upgradePlan(command, user, "gold");
+            }
         }
 
         if (account.getAccountType().equals("business")) {

@@ -7,19 +7,18 @@ import lombok.Data;
 import org.poo.fileio.*;
 import org.poo.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Data
 public class Bank {
 
     private ArrayList<Commerciant> commerciants = new ArrayList<>();  // aici se afla toti comm dintr-un test
-    public static ArrayList<Exchange> exchanges = new ArrayList<>();
+    public  ArrayList<Exchange> exchanges = new ArrayList<>();
     private Map<String, User> users = new LinkedHashMap<>();
     private Map<String, ArrayList<Commerciant>> commerciantsPerAcc = new HashMap<>();
     private Map<String, String> accountAlias = new HashMap<>();
+    private Exchange exchange = new Exchange(this);
 
 
     public Bank(ObjectInput input) {
@@ -51,6 +50,10 @@ public class Bank {
             System.out.println("Unknown command start debug : " + cmd.getCommand());
         }
     }
+
+//    public ArrayList<Exchange> getExchanges() {
+//        return exchanges;
+//    }
 
     public Account findAccount(User user, String iban){
         for(Account account : user.getAccounts()){
@@ -130,5 +133,28 @@ public class Bank {
                 .orElse(null); // Returnează null dacă nu găsește cardul
     }
 
+
+    public static boolean isUpgrade(String currentPlan, String newPlan) {
+        List<String> plans = Arrays.asList("standard", "student", "silver", "gold");
+
+        // Folosim lambda pentru a obține indexurile
+        int currentIndex = IntStream.range(0, plans.size())
+                .filter(i -> plans.get(i).equalsIgnoreCase(currentPlan))
+                .findFirst()
+                .orElse(-1);
+
+        int newIndex = IntStream.range(0, plans.size())
+                .filter(i -> plans.get(i).equalsIgnoreCase(newPlan))
+                .findFirst()
+                .orElse(-1);
+
+        return newIndex > currentIndex;
+    }
+
+    public void updateAccountPlan(User user, String newPlan) {
+        // Actualizăm planul pentru fiecare cont al utilizatorului folosind lambda
+        user.getAccounts().forEach(account -> account.setPlanType(newPlan));
+
+    }
 
 }

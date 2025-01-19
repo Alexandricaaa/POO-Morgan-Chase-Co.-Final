@@ -56,7 +56,7 @@ public final class Main {
             File out = new File(filepath);
             boolean isCreated = out.createNewFile();
             if (isCreated) {
-                if(file.getName().equals("test01_user_updates.json"))
+              //  if(file.getName().equals("test02_upgrade_plan.json"))
                 action(file.getName(), filepath);
             }
         }

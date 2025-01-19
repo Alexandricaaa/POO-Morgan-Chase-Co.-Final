@@ -46,4 +46,17 @@ public class Node {
         userNode.set("accounts", accountsArray);
         return userNode;
     }
+
+    public static ObjectNode createNode(String command,ObjectMapper objectMapper, int timestamp) {
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("command", command);
+        node.put("timestamp", timestamp);
+        return node;
+    }
+    public static void addErrorToNode(ObjectMapper objectMapper, ObjectNode node, String description, int timestamp) {
+        ObjectNode outObj = objectMapper.createObjectNode();
+        outObj.put("description", description);
+        outObj.put("timestamp", timestamp);
+        node.set("output", outObj);
+    }
 }

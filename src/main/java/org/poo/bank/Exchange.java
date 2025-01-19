@@ -11,6 +11,7 @@ public class Exchange {
     private String to;
     private double rate;
     private int timestamp;
+    private Bank bank = null;
 
     public Exchange(ExchangeInput input){
         this.from = input.getFrom();
@@ -18,8 +19,11 @@ public class Exchange {
         this.rate = input.getRate();
         this.timestamp = input.getTimestamp();
     }
+    public Exchange(Bank bank){
+        this.bank = bank;
+    }
 
-    public static double exchangeRate(final CommandInput command,
+    public double exchangeRate(final CommandInput command,
                                final String from, final String to) {
         if (from.equals(to)) {
             return command.getAmount();
@@ -29,7 +33,7 @@ public class Exchange {
         double inverseRate = 0.0;
         double indirectRate = 0.0;
 
-        for (Exchange exchange : Bank.exchanges) {
+        for (Exchange exchange : bank.getExchanges()) {
             if (from.equals(exchange.getFrom()) && to.equals(exchange.getTo())) {
                 directRate = exchange.getRate();
             } else if (to.equals(exchange.getFrom()) && from.equals(exchange.getTo())) {
@@ -52,12 +56,12 @@ public class Exchange {
                 + from + " to " + to);
     }
 
-    private static double findIndirectRate(final String from, final String to) {
+    private double findIndirectRate(final String from, final String to) {
 
-        for (Exchange firstLeg : Bank.exchanges) {
+        for (Exchange firstLeg : bank.getExchanges()) {
             if (from.equals(firstLeg.getFrom())) {
                 String intermediary = firstLeg.getTo();
-                for (Exchange secondLeg : Bank.exchanges) {
+                for (Exchange secondLeg : bank.getExchanges()) {
                     if (intermediary.equals(secondLeg.getFrom())
                             && to.equals(secondLeg.getTo())) {
                         return firstLeg.getRate() * secondLeg.getRate();
@@ -70,7 +74,7 @@ public class Exchange {
             }
             if (from.equals(firstLeg.getTo())) {
                 String intermediary = firstLeg.getFrom();
-                for (Exchange secondLeg : Bank.exchanges) {
+                for (Exchange secondLeg : bank.getExchanges()) {
                     if (intermediary.equals(secondLeg.getFrom())
                             && to.equals(secondLeg.getTo())) {
                         return (1 / firstLeg.getRate()) * secondLeg.getRate();
@@ -86,13 +90,13 @@ public class Exchange {
     }
 
 
-    public static double findExchangeRate(final String from, final String to) {
+    public double findExchangeRate(final String from, final String to) {
         if (from.equals(to)) {
             return 1.0; // Rata identității
         }
 
         // Verificăm rata directă și inversă
-        for (Exchange exchange : Bank.exchanges) {
+        for (Exchange exchange : bank.getExchanges()) {
             if (from.equals(exchange.getFrom()) && to.equals(exchange.getTo())) {
                 return exchange.getRate(); // Rată directă
             } else if (to.equals(exchange.getFrom()) && from.equals(exchange.getTo())) {

@@ -42,8 +42,9 @@ public class Commerciant {
 
     public static void incrementNumOfTr(CommandInput command, Bank bank, Account account){
 
+        Exchange exchange = new Exchange(bank);
         double amount = command.getAmount();
-        double ron = amount * Exchange.findExchangeRate(command.getCurrency(), "RON");
+        double ron = amount * exchange.findExchangeRate(command.getCurrency(), "RON");
 
         Commerciant commerciant = findCommerciant(command, bank, account);
         if(commerciant != null){

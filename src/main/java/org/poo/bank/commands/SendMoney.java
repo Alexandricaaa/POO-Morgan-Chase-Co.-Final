@@ -8,6 +8,7 @@ import org.poo.fileio.CommandInput;
 public class SendMoney implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        Exchange exchange = new Exchange(bank);
         Account sender = bank.findAccountByIBAN(command.getAccount());
         Account receiver = bank.findAccountByIBAN(command.getReceiver());
         User user = bank.getUsers().get(command.getEmail());
@@ -34,9 +35,9 @@ public class SendMoney implements CommandPattern {
         }
 
         double cashback = 0.0;
-        double amountInRON = command.getAmount() * Exchange.findExchangeRate(sender.getCurrency(), "RON");
+        double amountInRON = command.getAmount() * exchange.findExchangeRate(sender.getCurrency(), "RON");
         double commissionInRON = Payment.commission(sender.getPlanType(),amountInRON);
-        double commissionInCurr = Exchange.findExchangeRate("RON", sender.getCurrency()) * commissionInRON;
+        double commissionInCurr = exchange.findExchangeRate("RON", sender.getCurrency()) * commissionInRON;
 
         if (sendToComm != null) {
             sender.setThresholdSpent(sender.getThresholdSpent() + command.getAmount());
@@ -47,13 +48,13 @@ public class SendMoney implements CommandPattern {
                             comm.getCashbackStrategy().equals("spendingThreshold"))
                     .findFirst()
                     .map(comm -> {
-                        double sum = copy.getThresholdSpent() * Exchange.findExchangeRate(copy.getCurrency(), "RON");
+                        double sum = copy.getThresholdSpent() * exchange.findExchangeRate(copy.getCurrency(), "RON");
                         return Payment.threshold(sum, user, copy) * amountInRON;
                     })
                     .orElse(0.0);  // dacă nu se găsește comerciantul, cashback va fi 0
         }
 
-        cashback = Exchange.findExchangeRate("RON", sender.getCurrency()) * cashback;
+        cashback = exchange.findExchangeRate("RON", sender.getCurrency()) * cashback;
         double total = command.getAmount() + commissionInCurr - cashback;
 
         if(sender.getBalance() < total){
@@ -64,14 +65,16 @@ public class SendMoney implements CommandPattern {
         sender.setBalance(sender.getBalance() - total);
 
         if(sendToComm == null){
-            double receivedAmount = command.getAmount() * Exchange.findExchangeRate(sender.getCurrency(), receiver.getCurrency());
+            double receivedAmount = command.getAmount() * exchange.findExchangeRate(sender.getCurrency(), receiver.getCurrency());
             receiver.setBalance(receiver.getBalance() + receivedAmount);
             String mail2 = bank.findUserEmailByIBAN(command.getReceiver());
             User user2 = bank.getUsers().get(mail2);
             Transaction.receivedMoney(command,user2,receivedAmount, receiver,sender);
         }
 
-        Transaction.sentMoney(command, user, command.getAmount(),receiver, sender);
+        if(receiver!=null) {
+            Transaction.sentMoney(command, user, command.getAmount(), receiver, sender);
+        }
 
     }
 }

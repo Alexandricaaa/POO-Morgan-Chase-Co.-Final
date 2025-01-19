@@ -8,6 +8,7 @@ import org.poo.fileio.CommandInput;
 public class CashWithdrawal implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(command.getEmail());
         Account account = bank.findAccountByCardNumber(command.getCardNumber());
         boolean found = false;
@@ -40,8 +41,8 @@ public class CashWithdrawal implements CommandPattern {
 
         double amountRON = command.getAmount();
         double commission = Payment.commission(account.getPlanType(), amountRON);
-        commission = Exchange.findExchangeRate("RON", account.getCurrency());
-        double amountNeeded = amountRON * Exchange.findExchangeRate("RON", account.getCurrency());
+        commission = exchange.findExchangeRate("RON", account.getCurrency());
+        double amountNeeded = amountRON * exchange.findExchangeRate("RON", account.getCurrency());
         double total =  amountNeeded - commission;
 
         if(account.getBalance() < total){

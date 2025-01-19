@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
-import static org.poo.bank.Exchange.findExchangeRate;
 
 public class WithdrawSavings implements CommandPattern {
 
 
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(command.getEmail());
         Account account = new Account();
         Account classic = new Account();
@@ -51,7 +51,7 @@ public class WithdrawSavings implements CommandPattern {
             if (a.getAccountType().equals("classic")) {
                 classic = a;
                 ok = 1;
-                double rate = findExchangeRate(command.getCurrency(), account.getCurrency());
+                double rate = exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
                 double amount = rate * command.getAmount();
 
                 if (amount > account.getBalance()) {

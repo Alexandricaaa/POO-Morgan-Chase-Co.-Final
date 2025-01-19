@@ -24,7 +24,7 @@ public class Factory {
             case "createOneTimeCard" -> new CreateOneTimeCard();
 
             //nu e terminat
-           // case "upgradePlan" -> new UpgradePlan();
+            case "upgradePlan" -> new UpgradePlan();
 
             case "addInterest" -> new AddInterest();
 

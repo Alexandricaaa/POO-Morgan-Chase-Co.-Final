@@ -29,6 +29,8 @@ public class Transaction {
     private String cardOwner;
     private String cardNumber;
 
+    //e pentru upgrade
+    private String accountIBAN;
 
 
     //builder
@@ -50,6 +52,7 @@ public class Transaction {
         this.sender = builder.sender;
         this.receiver = builder.receiver;
         this.commerciant = builder.commerciant;
+        this.accountIBAN = builder.accountIBAN;
 
 
     }
@@ -72,8 +75,13 @@ public class Transaction {
         private String sender;
         private String receiver;
         private String commerciant;
+        private String accountIBAN;
 
 
+        public TransactionBuilder accountIBAN(String accountIBAN) {
+            this.accountIBAN = accountIBAN;
+            return this;
+        }
 
         public TransactionBuilder commerciant(String commerciant) {
             this.commerciant = commerciant;
@@ -191,6 +199,13 @@ public class Transaction {
         if(transaction.getAmountWithCurrency()!=null){
             transactionNode.put("amount", transaction.getAmountWithCurrency());
         }
+        if(transaction.getAccountIBAN()!=null){
+            transactionNode.put("accountIBAN", transaction.getAccountIBAN());
+        }
+
+        if(transaction.getNewPlanType()!=null){
+            transactionNode.put("newPlanType", transaction.getNewPlanType());
+        }
 
         return transactionNode;
     }
@@ -289,7 +304,7 @@ public class Transaction {
                 .timestamp(c.getTimestamp())
                 .description("Upgrade plan")
                 .newPlanType(newPlanType)
-                .account(c.getAccount())
+                .accountIBAN(c.getAccount())
                 .build();
         user.getTransactions().add(t);
     }
@@ -325,5 +340,7 @@ public class Transaction {
         user.getTransactions().add(t);
 
     }
+
+
 
 }
