@@ -283,6 +283,7 @@ public class Transaction {
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(c.getTimestamp())
                 .description(description + amount)
+                .amount(amount)
                 .build();
 
         user.getTransactions().add(t);

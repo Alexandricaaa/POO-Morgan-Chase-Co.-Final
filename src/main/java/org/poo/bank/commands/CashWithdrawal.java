@@ -50,7 +50,7 @@ public class CashWithdrawal implements CommandPattern {
             return;
         }
         account.setBalance(account.getBalance() - total);
-        Transaction.amountInDescription(command,user,command.getAmount(), "Cash withdrawal of");
+        Transaction.amountInDescription(command,user,command.getAmount(), "Cash withdrawal of ");
 
 
     }

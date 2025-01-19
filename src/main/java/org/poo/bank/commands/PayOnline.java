@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public class PayOnline implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        if(command.getAmount() == 0){
+            return;
+        }
         Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(command.getEmail());
         Account account = bank.findAccountByCardNumber(command.getCardNumber());
@@ -55,9 +58,10 @@ public class PayOnline implements CommandPattern {
         double cashback = Payment.cashback(command, commerciant, bank, account);
 
         double amountInCurrency = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
-        double commissionInCurrency = Payment.commission(account.getPlanType(),
+        double commissionInRON = Payment.commission(account.getPlanType(),
                 command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
         //double rest = amountInCurrency - commissionInCurrency;
+        double commissionInCurrency = exchange.findExchangeRate("RON", account.getCurrency()) * commissionInRON;
         double amountWithDiscount = amountInCurrency * discount;
         double total = amountInCurrency - amountWithDiscount - cashback + commissionInCurrency;
 
