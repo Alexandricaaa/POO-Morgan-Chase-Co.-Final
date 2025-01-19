@@ -10,7 +10,11 @@ public class AddInterest implements CommandPattern {
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
         User user = bank.getUsers().get(command.getEmail());
         if(user==null){
-            return;
+            String email = bank.findUserEmailByIBAN(command.getAccount());
+            user = bank.getUsers().get(email);
+            if(user == null){
+                return;
+            }
         }
         Account account = bank.findAccount(user, command.getAccount());
         double interest = 0.0;

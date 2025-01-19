@@ -206,6 +206,9 @@ public class Transaction {
         if(transaction.getNewPlanType()!=null){
             transactionNode.put("newPlanType", transaction.getNewPlanType());
         }
+        if(transaction.getCurrency()!=null){
+            transactionNode.put("currency", transaction.getCurrency());
+        }
 
         return transactionNode;
     }
@@ -272,7 +275,7 @@ public class Transaction {
     public static void addInterest(CommandInput c, User user, Account a, double amount){
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(c.getTimestamp())
-                .description("description")
+                .description("Interest rate income")
                 .currency(a.getCurrency())
                 .amount(amount)
                 .build();
