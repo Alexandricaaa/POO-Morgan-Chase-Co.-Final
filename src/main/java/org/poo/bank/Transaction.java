@@ -1,9 +1,12 @@
 package org.poo.bank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import org.poo.fileio.CommandInput;
+
+import java.util.List;
 
 @Data
 public class Transaction {
@@ -33,6 +36,31 @@ public class Transaction {
     //e pentru upgrade
     private String accountIBAN;
 
+    //pentru split
+    private List<String> accountSplit;
+    private List<Account> involvedAccounts;
+    private String splitType;
+    private List<Double> amounts;
+    private boolean accept = false;
+    private boolean reject = false;
+    private double amountToSplit;
+    //doar pentru splitPayment
+    private String error;
+    private boolean allAccepted = false;
+    private String findSplitAcc;
+
+
+
+
+    public boolean areAllAccountsAccepted() {
+        // Verifică dacă toate conturile au acceptat
+        for (Account account : involvedAccounts) {
+            if (!account.isAccepted()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     //builder
     private Transaction(TransactionBuilder builder) {
@@ -55,6 +83,13 @@ public class Transaction {
         this.commerciant = builder.commerciant;
         this.accountIBAN = builder.accountIBAN;
         this.findTransaction = builder.findTransaction;
+        this.accountSplit = builder.accountSplit;
+        this.splitType = builder.splitType;
+        this.amounts = builder.amounts;
+        this.amountToSplit = builder.amountToSplit;
+        this.error = builder.error;
+        this.allAccepted = builder.allAccepted;
+        this.findSplitAcc = builder.findSplitAcc;
 
 
     }
@@ -79,8 +114,43 @@ public class Transaction {
         private String commerciant;
         private String accountIBAN;
         private String findTransaction;
+        private List<String> accountSplit = null;
+        private String splitType;
+        private List<Double> amounts;
+        private double amountToSplit;
+        private String error;
+        private boolean allAccepted;
+        private String findSplitAcc;
 
 
+        public TransactionBuilder findSplitAcc(String findSplitAcc) {
+            this.findSplitAcc = findSplitAcc;
+            return this;
+        }
+
+        public TransactionBuilder error(String error){
+            this.error = error;
+            return this;
+        }
+        public TransactionBuilder amountToSplit(double amount){
+            this.amountToSplit = amount;
+            return this;
+        }
+
+        public TransactionBuilder accountSplit(List<String> l){
+            this.accountSplit = l;
+            return this;
+        }
+
+        public TransactionBuilder splitType(String pay){
+            this.splitType = pay;
+            return this;
+        }
+
+        public TransactionBuilder amounts(List<Double> amounts) {
+            this.amounts = amounts;
+            return this;
+        }
 
         public TransactionBuilder findTransaction(String findTransaction) {
             this.findTransaction = findTransaction;
@@ -219,6 +289,23 @@ public class Transaction {
             transactionNode.put("currency", transaction.getCurrency());
         }
 
+        if(transaction.getSplitType()!=null){
+            transactionNode.put("splitPaymentType", transaction.getSplitType());
+        }
+        if(transaction.getError()!=null){
+            transactionNode.put("error", transaction.getError());
+        }
+        if (transaction.getAmounts() != null) {
+            ArrayNode amountsArray = objectMapper.createArrayNode();
+            transaction.getAmounts().forEach(amountsArray::add);
+            transactionNode.set("amountForUsers", amountsArray);
+        }
+        if (transaction.getAccountSplit() != null) {
+            ArrayNode accSplitArray = objectMapper.createArrayNode();
+            transaction.getAccountSplit().forEach(accSplitArray::add);
+            transactionNode.set("involvedAccounts", accSplitArray);
+        }
+
         return transactionNode;
     }
 
@@ -354,7 +441,21 @@ public class Transaction {
         user.getTransactions().add(t);
 
     }
+    public static void splitCustom(CommandInput c, User user, String description, List<String> acc, Account a, List<Double> listAmount, double amount){
 
+        Transaction t = new Transaction.TransactionBuilder()
+                .findSplitAcc(a.getAccount())
+                .currency(c.getCurrency())
+                .amounts(listAmount)
+                .timestamp(c.getTimestamp())
+                .splitType("custom")
+                .description(description)
+                .accountSplit(acc)
+                .amountToSplit(amount)
+                .build();
+        user.getTransactions().add(t);
+
+    }
 
 
 }

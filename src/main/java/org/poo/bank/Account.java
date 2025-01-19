@@ -26,6 +26,9 @@ public class Account {
     private double spendingLimit;
 
     private int goldUpdate = 0;
+    private double split = 0.0;
+
+    private boolean accepted;
 
     private ArrayList<Card> cards = new ArrayList<>();
 
@@ -39,7 +42,9 @@ public class Account {
     private Map<Double, Boolean> isDiscountUsed = new HashMap<>();
 
 
-    public Account(){}
+    public Account(){
+        this.accepted = false;
+    }
 
     //deep copy
     public Account(Account a){
@@ -58,7 +63,9 @@ public class Account {
         currency = input.getCurrency();
         accountType = input.getAccountType();
         planType = "standard";
+        this.accepted = false;
     }
+
 
 
     public void initializeTransactions(ArrayList<Commerciant> commerciants) {

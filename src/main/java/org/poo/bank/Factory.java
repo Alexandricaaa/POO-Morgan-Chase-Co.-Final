@@ -1,6 +1,9 @@
 package org.poo.bank;
 
 import org.poo.bank.commands.*;
+import org.poo.bank.splitPayment.AcceptSplitPayment;
+import org.poo.bank.splitPayment.RejectSplitPayment;
+import org.poo.bank.splitPayment.SplitPayment;
 import org.poo.fileio.CommandInput;
 
 public class Factory {
@@ -45,11 +48,14 @@ public class Factory {
 
             case "spendingsReport" -> new SpendingsReport();
 
-           // case "splitPayment" -> new SplitPayment();
+            //treb modf
+            case "splitPayment" -> new SplitPayment();
 
-           // case "acceptSplitPayment" -> new AcceptSplitPayment();
+            //treb sa o modific
+            case "acceptSplitPayment" -> new AcceptSplitPayment();
 
-            //case "rejectSplitPayment" -> new RejectSplitPayment();
+            //treb modif
+            case "rejectSplitPayment" -> new RejectSplitPayment();
 
             case "cashWithdrawal" -> new CashWithdrawal();
 

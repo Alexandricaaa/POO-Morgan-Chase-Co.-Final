@@ -45,6 +45,9 @@ public class PrintTransactions implements CommandPattern {
 
         // Iterăm prin tranzacții și construim nodurile JSON pentru fiecare
         for (Transaction transaction : transactions) {
+            if(!transaction.isAllAccepted() && transaction.getSplitType()!=null){
+                continue;
+            }
             ObjectNode transactionNode = Transaction.createTransactionOutputNode(obj, transaction);
             transactionsArray.add(transactionNode);
         }

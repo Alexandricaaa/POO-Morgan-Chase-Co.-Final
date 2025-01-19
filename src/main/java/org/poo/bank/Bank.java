@@ -19,6 +19,9 @@ public class Bank {
     private Map<String, ArrayList<Commerciant>> commerciantsPerAcc = new HashMap<>();
     private Map<String, String> accountAlias = new HashMap<>();
 
+    //pentru split
+    Map<List<Transaction>, Boolean> transactionsList =  new HashMap<>();
+
 
 
     public Bank(ObjectInput input) {
@@ -155,6 +158,36 @@ public class Bank {
         // Actualizăm planul pentru fiecare cont al utilizatorului folosind lambda
         user.getAccounts().forEach(account -> account.setPlanType(newPlan));
 
+    }
+
+
+    public Transaction targetTransaction(List<Transaction> transactions,
+                                             String splitPaymentType,
+                                             List<String> ibanInvolved) {
+        if (transactions == null || ibanInvolved == null) {
+            return null;
+        }
+
+        return transactions.stream()
+                .filter(t -> t.getSplitType() != null &&
+                        splitPaymentType.equals(t.getSplitType()) &&
+                        t.getInvolvedAccounts() != null &&  // Verifică dacă lista nu este null
+                        t.getInvolvedAccounts().size() == ibanInvolved.size() &&
+                        t.getInvolvedAccounts().containsAll(ibanInvolved))
+                .findFirst()
+                .orElse(null);
+
+    }
+
+    public static List<Transaction> findTransactionList(Map<List<Transaction>, Boolean> transactionsList, Transaction t) {
+        for (Map.Entry<List<Transaction>, Boolean> entry : transactionsList.entrySet()) {
+            List<Transaction> transactions = entry.getKey();
+            // Căutăm tranzacția t în lista de tranzacții
+            if (transactions.contains(t)) {
+                return transactions; // Returnăm lista în care se află tranzacția t
+            }
+        }
+        return null; // Dacă tranzacția nu a fost găsită
     }
 
 }

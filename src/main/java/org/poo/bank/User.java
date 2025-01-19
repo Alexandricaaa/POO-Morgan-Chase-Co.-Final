@@ -19,6 +19,8 @@ public class User {
     private String plan;
     private String role;
 
+    private boolean rejected = false;
+
     //private ArrayList<Transaction> transactions = new ArrayList<>();
     //cheia e ibanu
     private ArrayList<Transaction> transactions = new ArrayList<>();

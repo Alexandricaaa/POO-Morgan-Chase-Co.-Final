@@ -56,7 +56,7 @@ public final class Main {
             File out = new File(filepath);
             boolean isCreated = out.createNewFile();
             if (isCreated) {
-               // if(file.getName().equals("test06_cashback.json"))
+               // if(file.getName().equals("test07_simple_split_payment.json"))
                 action(file.getName(), filepath);
             }
         }
@@ -81,6 +81,7 @@ public final class Main {
 
         for(CommandInput command : inputData.getCommands()){
             int timestamp = command.getTimestamp();
+            String commandname = command.getCommand();
             bank.processCommand(command, output, objectMapper);
         }
 

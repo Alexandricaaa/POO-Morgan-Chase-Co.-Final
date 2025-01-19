@@ -48,7 +48,7 @@ public class DeleteAccount implements CommandPattern {
             outputNode.put("success", "Account deleted");
             outputNode.put("timestamp", command.getTimestamp());
         } else {
-            Transaction.invalidAccType(command,user, "Account couldn't be deleted - there are funds remaining");
+            Transaction.error(command,user, "Account couldn't be deleted - there are funds remaining");
 
             ObjectNode outputNode = newObject.putObject("output");
             outputNode.put

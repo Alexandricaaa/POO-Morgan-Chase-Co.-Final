@@ -45,8 +45,17 @@ public class SpendingsReport implements CommandPattern {
                         .filter(t -> t.getTimestamp() >= command.getStartTimestamp() && t.getTimestamp() <= command.getEndTimestamp())
                         .filter(t -> t.getFindTransaction() != null && t.getFindTransaction().equals(command.getAccount()))
                         .forEach(t -> {
+                            // Adăugăm tranzacția la array
                             Node.addTransaction(transactionArray, t, obj);
-                            commerciantTotals.merge(t.getCommerciant(), t.getAmount(), Double::sum);
+
+                            // Verificăm dacă comerciantul și suma sunt valide înainte de a le folosi
+                            String commerciant = t.getCommerciant();
+                            Double amount = t.getAmount();
+
+                            if (commerciant != null && amount != null) {
+                                // Folosim merge doar dacă comerciantul și suma sunt valabile
+                                commerciantTotals.merge(commerciant, amount, Double::sum);
+                            }
                         });
 
 
