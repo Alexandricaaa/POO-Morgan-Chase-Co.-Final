@@ -23,7 +23,8 @@ public class SplitPayment implements CommandPattern {
             split.splitPayment(obj, command);
         }
         else{
-
+            SplitEqual split = new SplitEqual();
+            split.splitPayment(obj, command, bank);
         }
 
         List<Transaction> trans= new ArrayList<>();
@@ -32,7 +33,7 @@ public class SplitPayment implements CommandPattern {
         for(String iban : command.getAccounts()){
             User user = bank.getUsers().get(bank.findUserEmailByIBAN(iban));
             for(Transaction t : user.getTransactions()){
-                if(t.getSplitType()!=null){
+                if(t.getSplitType()!=null && t.getSplitType().equals(command.getSplitPaymentType())){
                     trans.add(t);
                 }
             }

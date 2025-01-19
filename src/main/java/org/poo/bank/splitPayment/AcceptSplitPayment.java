@@ -47,26 +47,39 @@ public class AcceptSplitPayment implements CommandPattern {
             //daca au acceptat toti
             for (Transaction t : list) {
                 Account a = bank.findAccountByIBAN(t.getFindSplitAcc());
-                if (a.getBalance() < t.getAmountToSplit()) {
-                    iban = a.getAccount();
-                    break;
+                if(t.getSplitType().equals("custom")) {
+                    if (a.getBalance() < t.getAmountToSplit()) {
+                        iban = a.getAccount();
+                        break;
+                    }
+                }
+                else{
+                    if (a.getBalance() < t.getAmountEqual()) {
+                        iban = a.getAccount();
+                        break;
+                    }
                 }
             }
 
             if (iban != null) {
                 for (Transaction t : list) {
-                    t.setError("Account " + iban + " has insufficient funds");
+                    t.setError("Account " + iban + " has insufficient funds for a split payment.");
                 }
             } else {
                 for (Transaction t : list) {
                     Account a = bank.findAccountByIBAN(t.getFindSplitAcc());
-                    a.setBalance(a.getBalance() - t.getAmountToSplit());
-                }
-
-                for (Transaction t : list) {
-                    t.setAllAccepted(true);
+                    if(t.getSplitType().equals("custom")) {
+                        a.setBalance(a.getBalance() - t.getAmountToSplit());
+                    } else{
+                        a.setBalance(a.getBalance() - t.getAmountEqual());
+                        }
                 }
             }
+
+            for (Transaction t : list) {
+                t.setAllAccepted(true);
+            }
+
         }
 
     }

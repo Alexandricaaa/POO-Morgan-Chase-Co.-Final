@@ -43,11 +43,13 @@ public class Transaction {
     private List<Double> amounts;
     private boolean accept = false;
     private boolean reject = false;
+    //de aici scad din balance acc
     private double amountToSplit;
     //doar pentru splitPayment
     private String error;
     private boolean allAccepted = false;
     private String findSplitAcc;
+    private Double amountEqual;
 
 
 
@@ -90,6 +92,7 @@ public class Transaction {
         this.error = builder.error;
         this.allAccepted = builder.allAccepted;
         this.findSplitAcc = builder.findSplitAcc;
+        this.amountEqual = builder.amountEqual;
 
 
     }
@@ -121,7 +124,13 @@ public class Transaction {
         private String error;
         private boolean allAccepted;
         private String findSplitAcc;
+        private Double amountEqual;
 
+
+        public TransactionBuilder amountEqual(double amountEqual) {
+            this.amountEqual = amountEqual;
+            return this;
+        }
 
         public TransactionBuilder findSplitAcc(String findSplitAcc) {
             this.findSplitAcc = findSplitAcc;
@@ -305,6 +314,9 @@ public class Transaction {
             transaction.getAccountSplit().forEach(accSplitArray::add);
             transactionNode.set("involvedAccounts", accSplitArray);
         }
+//        if(transaction.getAmountEqual()!=null){
+//            transactionNode.put("amount", transaction.getAmountEqual());
+//        }
 
         return transactionNode;
     }
@@ -453,6 +465,23 @@ public class Transaction {
                 .accountSplit(acc)
                 .amountToSplit(amount)
                 .build();
+        user.getTransactions().add(t);
+
+    }
+    public static void splitEqual(CommandInput c, User user, String description, List<String> acc, Account a, double amount, String err){
+
+        Transaction t = new Transaction.TransactionBuilder()
+                .findSplitAcc(a.getAccount())
+                .currency(c.getCurrency())
+                .timestamp(c.getTimestamp())
+                .splitType("equal")
+                .description(description)
+                .accountSplit(acc)
+                .amountEqual(amount)
+                .amount(c.getAmount()/acc.size())
+                .error(err)
+                .build();
+
         user.getTransactions().add(t);
 
     }
