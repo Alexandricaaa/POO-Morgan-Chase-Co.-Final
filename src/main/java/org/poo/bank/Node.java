@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import java.util.Map;
+
 public class Node {
 
     public static ObjectNode createAccountNode(Account account, ObjectMapper objectMapper) {
@@ -58,5 +60,31 @@ public class Node {
         outObj.put("description", description);
         outObj.put("timestamp", timestamp);
         node.set("output", outObj);
+    }
+    public static ObjectNode createAccountInfoNode(ObjectMapper objectMapper, Account acc) {
+        ObjectNode outObj = objectMapper.createObjectNode();
+        outObj.put("IBAN", acc.getAccount());
+        outObj.put("balance", acc.getBalance());
+        outObj.put("currency", acc.getCurrency());
+        return outObj;
+    }
+    public static void addTransaction(ArrayNode transactionArray, Transaction t, ObjectMapper objectMapper) {
+        ObjectNode transactionNode = objectMapper.createObjectNode();
+        transactionNode.put("timestamp", t.getTimestamp());
+        transactionNode.put("description", t.getDescription());
+        transactionNode.put("amount", t.getAmount());
+        transactionNode.put("commerciant", t.getCommerciant());
+        transactionArray.add(transactionNode);
+    }
+
+    public static ArrayNode createCommerciantsArray(Map<String, Double> commerciantTotals, ObjectMapper objectMapper) {
+        ArrayNode commerciantsArray = objectMapper.createArrayNode();
+        commerciantTotals.forEach((commerciant, total) -> {
+            ObjectNode commerciantNode = objectMapper.createObjectNode();
+            commerciantNode.put("commerciant", commerciant);
+            commerciantNode.put("total", total);
+            commerciantsArray.add(commerciantNode);
+        });
+        return commerciantsArray;
     }
 }

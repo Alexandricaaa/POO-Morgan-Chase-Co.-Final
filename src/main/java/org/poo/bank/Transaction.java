@@ -19,6 +19,7 @@ public class Transaction {
     private String amountWithCurrency;
     private String transferType;
     private String commerciant;
+    private String findTransaction; // e ibanul pentru spendingsReport
 
 
     private String savingsAccount;
@@ -53,6 +54,7 @@ public class Transaction {
         this.receiver = builder.receiver;
         this.commerciant = builder.commerciant;
         this.accountIBAN = builder.accountIBAN;
+        this.findTransaction = builder.findTransaction;
 
 
     }
@@ -76,7 +78,14 @@ public class Transaction {
         private String receiver;
         private String commerciant;
         private String accountIBAN;
+        private String findTransaction;
 
+
+
+        public TransactionBuilder findTransaction(String findTransaction) {
+            this.findTransaction = findTransaction;
+            return this;
+        }
 
         public TransactionBuilder accountIBAN(String accountIBAN) {
             this.accountIBAN = accountIBAN;
@@ -292,11 +301,12 @@ public class Transaction {
         user.getTransactions().add(t);
     }
 
-    public static void cardPayment(CommandInput c, User user, double amount, String commerciant){
+    public static void cardPayment(CommandInput c, User user, double amount, String commerciant, String iban){
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(c.getTimestamp())
                 .description("Card payment")
                 .amount(amount)
+                .findTransaction(iban)
                 .commerciant(commerciant)
                 .build();
 

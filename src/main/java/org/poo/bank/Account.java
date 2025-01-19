@@ -69,8 +69,15 @@ public class Account {
 
 
     public static void PlanType(Account account, User user) {
-        if (user.getPlan() != null) {
-            account.setPlanType(user.getPlan());
+        String plan = null;
+        for(Account a : user.getAccounts()){
+            if(a.getPlanType() != null){
+                plan = a.getPlanType();
+                break;
+            }
+        }
+        if (plan != null) {
+            account.setPlanType(plan);
         } else {
             if (user.getOccupation().equals("student")) {
                 account.setPlanType("student");

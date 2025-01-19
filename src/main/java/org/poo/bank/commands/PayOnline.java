@@ -31,7 +31,7 @@ public class PayOnline implements CommandPattern {
         }
 
         if (account == null || !card || (!isMyAccount)) {
-            Bank.addCommandNode(output, obj, "Card has already been used",
+            Bank.addCommandNode(output, obj, "payOnline",
                     "Card not found", command.getTimestamp());
             return;
         }
@@ -41,7 +41,7 @@ public class PayOnline implements CommandPattern {
                 copyCard = c;
                 if (c.getStatus().equals("destroyed")) {
                     Transaction.error(command, user, "Card has already been used");
-                    Bank.addCommandNode(output, obj, "Card has already been used",
+                    Bank.addCommandNode(output, obj, "payOnline",
                             "Card not found", command.getTimestamp());
                     return;
                 }
@@ -102,7 +102,7 @@ public class PayOnline implements CommandPattern {
 
 
         account.setBalance(account.getBalance() - total);
-        Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() );
+        Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() ,account.getAccount());
         double gold = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON");
         if (300 <= gold) {
             account.setGoldUpdate(account.getGoldUpdate() + 1);

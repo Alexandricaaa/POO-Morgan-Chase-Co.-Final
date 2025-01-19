@@ -23,7 +23,6 @@ public class Factory {
 
             case "createOneTimeCard" -> new CreateOneTimeCard();
 
-            //nu e terminat
             case "upgradePlan" -> new UpgradePlan();
 
             case "addInterest" -> new AddInterest();
@@ -44,7 +43,7 @@ public class Factory {
 
            // case "businessReport" -> new BusinessReport();
 
-            //case "spendingsReport" -> new SpendingsReport();
+            case "spendingsReport" -> new SpendingsReport();
 
            // case "splitPayment" -> new SplitPayment();
 
