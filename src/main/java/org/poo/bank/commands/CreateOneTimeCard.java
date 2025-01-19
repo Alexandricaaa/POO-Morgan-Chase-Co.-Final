@@ -18,6 +18,6 @@ public class CreateOneTimeCard implements CommandPattern {
             return;
         }
         account.getCards().add(oneTimeCard);
-        Transaction.card(command, user, oneTimeCard, "onetimecard created");
+        Transaction.card(command, user, oneTimeCard, "New card created", account.getAccount());
     }
 }

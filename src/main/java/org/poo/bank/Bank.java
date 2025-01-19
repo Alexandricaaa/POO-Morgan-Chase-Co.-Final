@@ -18,7 +18,7 @@ public class Bank {
     private Map<String, User> users = new LinkedHashMap<>();
     private Map<String, ArrayList<Commerciant>> commerciantsPerAcc = new HashMap<>();
     private Map<String, String> accountAlias = new HashMap<>();
-    private Exchange exchange = new Exchange(this);
+
 
 
     public Bank(ObjectInput input) {

@@ -124,12 +124,12 @@ public class PayOnline implements CommandPattern {
         }
         if(copyCard!=null){
             if(copyCard.isOneTime()){
-                Transaction.card(command, user, copyCard, "The card has been destroyed");
+                Transaction.card(command, user, copyCard, "The card has been destroyed", account.getAccount());
                 copyCard.setStatus("destroyed");
                 Card newOneTimeCard = new Card();
                 newOneTimeCard.setOneTime(true);
                 account.getCards().add(newOneTimeCard);
-                Transaction.card(command,user, copyCard, "New card created");
+                Transaction.card(command,user, newOneTimeCard, "New card created", account.getAccount());
             }
         }
     }

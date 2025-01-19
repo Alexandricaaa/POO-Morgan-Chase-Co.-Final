@@ -58,4 +58,14 @@ public class User {
         LocalDate now = LocalDate.now();
         return Period.between(dob, now).getYears();
     }
+
+    public String toString() {
+        // Nu pune referințe la conturi, doar tipul de date relevant
+        return "User{" +
+                "name='" + email + '\'' +
+                ", accounts=" + accounts.size() +  // Afișăm doar numărul de conturi
+                '}';
+    }
+
+
 }

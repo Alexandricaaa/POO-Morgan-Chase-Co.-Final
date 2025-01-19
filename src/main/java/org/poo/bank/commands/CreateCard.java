@@ -21,6 +21,6 @@ public class CreateCard implements CommandPattern {
 
         Card card = new Card();
         account.getCards().add(card);
-        Transaction.card(command, user, card, "New card created");
+        Transaction.card(command, user, card, "New card created", account.getAccount());
     }
 }

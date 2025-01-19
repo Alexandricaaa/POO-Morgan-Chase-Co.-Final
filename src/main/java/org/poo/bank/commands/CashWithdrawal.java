@@ -41,9 +41,9 @@ public class CashWithdrawal implements CommandPattern {
 
         double amountRON = command.getAmount();
         double commission = Payment.commission(account.getPlanType(), amountRON);
-        commission = exchange.findExchangeRate("RON", account.getCurrency());
-        double amountNeeded = amountRON * exchange.findExchangeRate("RON", account.getCurrency());
-        double total =  amountNeeded - commission;
+       double totalRON = amountRON + commission;
+        double amountNeeded = totalRON * exchange.findExchangeRate("RON", account.getCurrency());
+        double total =  amountNeeded;
 
         if(account.getBalance() < total){
             Transaction.error(command,user,"Insufficient funds");

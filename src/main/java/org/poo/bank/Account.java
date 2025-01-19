@@ -104,4 +104,13 @@ public class Account {
         account.setDepositLimit(depositLimit);
         account.setSpendingLimit(depositLimit); // Același calcul pentru spending limit
     }
+
+    @Override
+    public String toString() {
+        // Nu pune referințe la utilizatori, doar informațiile relevante ale contului
+        return "Account{" +
+                "accountNumber='" + account + '\'' +
+                '}';
+    }
 }
+

@@ -258,13 +258,13 @@ public class Transaction {
         user.getTransactions().add(t);
     }
 
-    public static void card(CommandInput command, User user, Card card, String description){
+    public static void card(CommandInput command, User user, Card card, String description, String iban){
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(command.getTimestamp())
                 .description(description)
                 .cardNumber(card.getCardNumber())
                 .cardOwner(command.getEmail())
-                .account(command.getAccount())
+                .account(iban)
                 .build();
         user.getTransactions().add(t);
     }
