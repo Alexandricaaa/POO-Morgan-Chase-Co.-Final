@@ -19,6 +19,10 @@ public class Bank {
     private Map<String, ArrayList<Commerciant>> commerciantsPerAcc = new HashMap<>();
     private Map<String, String> accountAlias = new HashMap<>();
 
+    //cheia este ibanu
+    //nu se afla si ownerul
+    private Map<String, List<User>> businessUsersPerAcc = new LinkedHashMap<>();
+
     //pentru split
     Map<List<Transaction>, Boolean> transactionsList =  new HashMap<>();
 

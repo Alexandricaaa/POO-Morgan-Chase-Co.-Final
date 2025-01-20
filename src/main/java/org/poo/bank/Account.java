@@ -4,9 +4,7 @@ import lombok.Data;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Data
 public class Account {
@@ -40,6 +38,11 @@ public class Account {
 
     //double = discountul, boolean daca a fost folosit sau nu
     private Map<Double, Boolean> isDiscountUsed = new HashMap<>();
+
+    private Map<Transaction, Double> businessSpendings = new LinkedHashMap<>();
+    private Map<Transaction, Double> businessDeposit = new LinkedHashMap<>();
+
+    private List<User> businessUsers = new ArrayList<>();
 
 
     public Account(){
@@ -77,17 +80,23 @@ public class Account {
 
     public static void PlanType(Account account, User user) {
         String plan = null;
+        int ok = 0;
         for(Account a : user.getAccounts()){
             if(a.getPlanType() != null){
                 plan = a.getPlanType();
+                ok = 1;
                 break;
             }
         }
+
         if (plan != null) {
             account.setPlanType(plan);
         } else {
             if (user.getOccupation().equals("student")) {
                 account.setPlanType("student");
+            }
+            else{
+                account.setPlanType("standard");
             }
         }
     }
@@ -109,7 +118,9 @@ public class Account {
         //user.getRole().put(account.getIBAN(), "owner");
 
         Exchange exchange = new Exchange(bank);
-        account.setPlanType(user.getPlan());
+       if(user.getPlan()!=null) {
+           account.setPlanType(user.getPlan());
+       }
         user.getEmployeeRole().put(account.getAccount(), "owner");
         //account.getAssociates().add(user);
 

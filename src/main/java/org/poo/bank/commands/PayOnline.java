@@ -66,6 +66,8 @@ public class PayOnline implements CommandPattern {
         double total = amountInCurrency - amountWithDiscount - cashback + commissionInCurrency;
 
 
+
+
         if (account.getAccountType().equals("business") && user.getEmployeeRole() != null && account.getAccount()!=null) {
             if (user.getEmployeeRole().get(account.getAccount()).equals("employee")) {
                 if (total > account.getSpendingLimit()) {
@@ -100,7 +102,9 @@ public class PayOnline implements CommandPattern {
             return;
         }
 
-
+        System.out.println("new balance  " + (account.getBalance() - total ));
+        System.out.println("cashback " + cashback);
+        System.out.println("commission " + commissionInCurrency);
         account.setBalance(account.getBalance() - total);
         Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() ,account.getAccount());
         double gold = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON");

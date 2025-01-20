@@ -4,24 +4,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bank.Account;
+import org.poo.bank.Bank;
+import org.poo.bank.CommandPattern;
 import org.poo.fileio.CommandInput;
 
-public class TransactionReportStrategy implements ReportStrategy {
+public class TransactionReportStrategy implements CommandPattern {
+
+
+
+    public TransactionReportStrategy() {
+    }
 
     @Override
-    public void generateReport(CommandInput cmd, ArrayNode output, ObjectMapper objectMapper, Account account) {
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("command", "businessReport");
-        node.put("timestamp", cmd.getTimestamp());
+    public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
 
-        ObjectNode outputNode = objectMapper.createObjectNode();
-        outputNode.put("IBAN", account.getAccount());
-        outputNode.put("balance", account.getBalance());
-        outputNode.put("currency", account.getCurrency());
-        outputNode.put("spending limit", account.getSpendingLimit());
-        outputNode.put("deposit limit", account.getDepositLimit());
-        outputNode.put("statistics type", "transaction");
+        ReportStrategy strategy = null;
 
-
+        if(command.getType().equals("transaction")){
+            strategy = new BusinessRepTransaction(bank);
+        }
+        else{
+            //strategy = new BusinessRepSpendings(bank);
+        }
+        if(strategy != null) {
+            strategy.generateReport(command, output, obj);
+        }
     }
 }

@@ -7,5 +7,5 @@ import org.poo.fileio.CommandInput;
 
 public interface ReportStrategy {
 
-    void generateReport(CommandInput cmd, ArrayNode output, ObjectMapper objectMapper, Account account);
+    void generateReport(CommandInput cmd, ArrayNode output, ObjectMapper objectMapper);
 }

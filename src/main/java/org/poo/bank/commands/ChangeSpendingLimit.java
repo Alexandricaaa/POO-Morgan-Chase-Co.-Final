@@ -35,7 +35,7 @@ public class ChangeSpendingLimit implements CommandPattern {
             output.add(node);
         }
         else{
-            account.setSpendingLimit(command.getSpendingLimit());
+            account.setSpendingLimit(command.getAmount());
         }
     }
 }

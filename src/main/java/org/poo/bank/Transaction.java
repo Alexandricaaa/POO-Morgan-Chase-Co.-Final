@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import org.poo.fileio.CommandInput;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -51,18 +52,10 @@ public class Transaction {
     private String findSplitAcc;
     private Double amountEqual;
 
+    //pentru businessReport
+    private Double deposited;
+    private Double spent;
 
-
-
-    public boolean areAllAccountsAccepted() {
-        // Verifică dacă toate conturile au acceptat
-        for (Account account : involvedAccounts) {
-            if (!account.isAccepted()) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     //builder
     private Transaction(TransactionBuilder builder) {
@@ -93,7 +86,8 @@ public class Transaction {
         this.allAccepted = builder.allAccepted;
         this.findSplitAcc = builder.findSplitAcc;
         this.amountEqual = builder.amountEqual;
-
+        this.deposited = builder.deposited;
+        this.spent = builder.spent;
 
     }
 
@@ -125,7 +119,19 @@ public class Transaction {
         private boolean allAccepted;
         private String findSplitAcc;
         private Double amountEqual;
+        private Double deposited;
+        private Double spent;
 
+
+        public TransactionBuilder deposited(Double deposited) {
+            this.deposited = deposited;
+            return this;
+        }
+
+        public TransactionBuilder spent(Double spent) {
+            this.spent = spent;
+            return this;
+        }
 
         public TransactionBuilder amountEqual(double amountEqual) {
             this.amountEqual = amountEqual;
@@ -365,8 +371,12 @@ public class Transaction {
                 .email(user.getEmail())
                 .account(command.getAccount())
                 .timestamp(command.getTimestamp())
+                .deposited(command.getAmount())
                 .build();
         user.getTransactions().add(t);
+        String accountIBAN = command.getAccount();
+
+        user.getTrPerAcc().computeIfAbsent(accountIBAN, k -> new ArrayList<>()).add(t);
     }
 
     public static void card(CommandInput command, User user, Card card, String description, String iban){
@@ -407,9 +417,13 @@ public class Transaction {
                 .amount(amount)
                 .findTransaction(iban)
                 .commerciant(commerciant)
+                .spent(amount)
                 .build();
 
         user.getTransactions().add(t);
+
+
+        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(t);
     }
 
     public static void upgradePlan(CommandInput c, User user, String newPlanType){
@@ -448,9 +462,13 @@ public class Transaction {
                 .sender(sender.getAccount())
                 .receiver(receiver.getAccount())
                 .transferType("sent")
+                .spent(amount)
                 .build();
 
         user.getTransactions().add(t);
+        String accountIBAN = c.getAccount();
+
+        user.getTrPerAcc().computeIfAbsent(accountIBAN, k -> new ArrayList<>()).add(t);
 
     }
     public static void splitCustom(CommandInput c, User user, String description, List<String> acc, Account a, List<Double> listAmount, double amount){

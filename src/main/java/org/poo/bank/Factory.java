@@ -1,6 +1,7 @@
 package org.poo.bank;
 
 import org.poo.bank.commands.*;
+import org.poo.bank.commands.businessReport.TransactionReportStrategy;
 import org.poo.bank.splitPayment.AcceptSplitPayment;
 import org.poo.bank.splitPayment.RejectSplitPayment;
 import org.poo.bank.splitPayment.SplitPayment;
@@ -44,14 +45,14 @@ public class Factory {
 
             case "report" -> new Report();
 
-           // case "businessReport" -> new BusinessReport();
+            case "businessReport" -> new TransactionReportStrategy();
 
             case "spendingsReport" -> new SpendingsReport();
 
             //treb modf
             case "splitPayment" -> new SplitPayment();
 
-            //treb sa o modific
+
             case "acceptSplitPayment" -> new AcceptSplitPayment();
 
             //treb modif

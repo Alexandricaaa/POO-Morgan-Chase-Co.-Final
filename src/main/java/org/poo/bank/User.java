@@ -26,9 +26,11 @@ public class User {
     private ArrayList<Transaction> transactions = new ArrayList<>();
     private Set<Account> accounts = new LinkedHashSet<>();
     //cheia este ibanul contului, value este rolul
-    private Map<String, String> employeeRole = new HashMap<>();
+    private Map<String, String> employeeRole = new LinkedHashMap<>();
 
     private Map<Integer, Double> spendings = new HashMap<>();
+
+    private Map<String, List<Transaction>> trPerAcc = new LinkedHashMap<>();
 
 
     public User(UserInput input){

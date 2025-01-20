@@ -3,6 +3,7 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.poo.fileio.CommandInput;
 
 import java.util.Map;
 
@@ -87,4 +88,26 @@ public class Node {
         });
         return commerciantsArray;
     }
+
+    public static ObjectNode createBusinessReportNode(CommandInput cmd, Account account, ObjectMapper objectMapper) {
+        // Creează nodul principal
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("command", "businessReport");
+        node.put("timestamp", cmd.getTimestamp());
+
+        // Creează nodul de output
+        ObjectNode outputNode = objectMapper.createObjectNode();
+        outputNode.put("IBAN", account.getAccount());
+        outputNode.put("balance", account.getBalance());
+        outputNode.put("currency", account.getCurrency());
+        outputNode.put("spending limit", account.getSpendingLimit());
+        outputNode.put("deposit limit", account.getDepositLimit());
+        outputNode.put("statistics type", "transaction");
+
+        // Adaugă nodul de output la nodul principal
+        node.set("output", outputNode);
+
+        return node;
+    }
+
 }
