@@ -51,6 +51,7 @@ public class Transaction {
     private boolean allAccepted = false;
     private String findSplitAcc;
     private Double amountEqual;
+    private Boolean alreadyProcessed = false;
 
     //pentru businessReport
     private Double deposited;
@@ -92,6 +93,7 @@ public class Transaction {
         this.deposited = builder.deposited;
         this.spent = builder.spent;
         this.ignore = builder.ignore;
+        this.alreadyProcessed = builder.alreadyProcessed;
 
     }
 
@@ -126,8 +128,13 @@ public class Transaction {
         private Double deposited;
         private Double spent;
         private boolean ignore;
+        private Boolean alreadyProcessed;
 
 
+        public TransactionBuilder alreadyProcessed(Boolean isFalse) {
+            this.alreadyProcessed = isFalse;
+            return this;
+        }
         public TransactionBuilder ignore(Boolean ignore) {
             this.ignore = ignore;
             return this;

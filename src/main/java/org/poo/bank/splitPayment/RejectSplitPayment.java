@@ -24,12 +24,13 @@ public class RejectSplitPayment implements CommandPattern {
         Transaction target = null;
         for (Transaction t : user.getTransactions()) {
             if (t.getSplitType() != null && t.getSplitType().equals(command.getSplitPaymentType())
-                    && (!t.isAccept() || !t.isReject())) {
+                    && (!t.isAccept())) {
                 target = t;
                 break;
             }
         }
         if (target != null) {
+            target.setAccept(true);
             target.setReject(true);
         }
 
@@ -37,20 +38,20 @@ public class RejectSplitPayment implements CommandPattern {
         if (list != null) {
             for (Transaction t : list) {
                 if (!t.isAccept()) {
-                    if (!t.isReject()) {
-                        return;
-                    }
+                    return;
                 }
             }
         }
 
-        for (Transaction t : list) {
-            t.setError("ne user rejected the payment.");
-        }
+        if(list!=null) {
+            for (Transaction t : list) {
+                t.setError("One user rejected the payment.");
+            }
 
-        for (Transaction t : list) {
-            t.setAllAccepted(true);
-        }
 
+            for (Transaction t : list) {
+                t.setAllAccepted(true);
+            }
+        }
     }
 }
