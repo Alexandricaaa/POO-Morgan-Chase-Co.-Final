@@ -85,9 +85,11 @@ public class SendMoney implements CommandPattern {
         if(sendToComm == null){
             double receivedAmount = command.getAmount() * exchange.findExchangeRate(sender.getCurrency(), receiver.getCurrency());
             receiver.setBalance(receiver.getBalance() + receivedAmount);
-            String mail2 = bank.findUserEmailByIBAN(command.getReceiver());
+            String mail2 = bank.findUserEmailByIBAN(receiver.getAccount());
             User user2 = bank.getUsers().get(mail2);
-            Transaction.receivedMoney(command,user2,receivedAmount, receiver,sender);
+            //if(user2!=null) {
+                Transaction.receivedMoney(command, user2, receivedAmount, receiver, sender);
+           // }
         }
         else{
             Transaction.sentMoney(command, user, command.getAmount(), sendToComm.getAccount(), sender);

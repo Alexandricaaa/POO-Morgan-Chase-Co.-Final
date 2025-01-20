@@ -23,7 +23,7 @@ public class SetAlias implements CommandPattern {
         }
         if(accountFound) {
             a.setAlias(command.getAlias());
-            bank.getAccountAlias().put(command.getAccount(), command.getAlias());
+            bank.getAccountAlias().put(command.getAlias(),command.getAccount() );
         }
     }
 }

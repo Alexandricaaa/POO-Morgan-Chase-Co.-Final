@@ -34,47 +34,94 @@ public class BusinessRepSpendings implements ReportStrategy{
                     .toList();
         }
 
-        // Preluăm toate tranzacțiile unice pentru cont
-        Set<Transaction> uniqueTransactions = new HashSet<>();
+        // Construim lista tranzacțiilor efectuate spre contul de business
+        List<Transaction> businessTransactions = new ArrayList<>();
         for (User user : bank.getUsers().values()) {
-            for (Account a : user.getAccounts()) {
-                if (a.getAccount().equals(command.getAccount())) {
-                    List<Transaction> transactions = user.getTrPerAcc().getOrDefault(account.getAccount(), new ArrayList<>());
-                    uniqueTransactions.addAll(transactions);
-                }
+            List<Transaction> userTransactions = user.getTrPerAcc().getOrDefault(command.getAccount(), new ArrayList<>());
+            if (user.getEmployeeRole() != null &&
+                    user.getEmployeeRole().get(command.getAccount()) != null &&
+                    !user.getEmployeeRole().get(command.getAccount()).equals("owner")) {
+
+                businessTransactions.addAll(userTransactions);
             }
         }
 
         // Filtrăm tranzacțiile pe baza intervalului de timp
-        Set<Transaction> filtered = uniqueTransactions.stream()
+        List<Transaction> filteredTransactions = businessTransactions.stream()
                 .filter(t -> t.getTimestamp() >= command.getStartTimestamp() && t.getTimestamp() <= command.getEndTimestamp())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
-        // Creăm lista de comercianți care au tranzacții asociate
+        Map<Commerciant, Boolean> isProcessed = new LinkedHashMap<>();
+        for(Commerciant comm : bank.getCommerciants()){
+            isProcessed.put(comm, false);
+        }
+        // Creăm lista de comercianți cu detalii
         ArrayNode commArray = objectMapper.createArrayNode();
+
         if (commPerAcc != null) {
             for (Commerciant c : commPerAcc) {
-                // Calculăm suma cheltuită pentru fiecare comerciant
-                double sumPerComm = filtered.stream()
+                // Preluăm tranzacțiile pentru comerciantul curent
+                List<Transaction> commTransactions = filteredTransactions.stream()
                         .filter(t -> t.getCommerciant() != null && c.getName().equals(t.getCommerciant()))
-                        .mapToDouble(Transaction::getAmount)
-                        .sum();
-
-                // Adăugăm comerciantul doar dacă a avut tranzacții
-                if (sumPerComm > 0) {
+                        .collect(Collectors.toList());
+                ArrayNode employeesArray = null;
+                ArrayNode managersArray = null;
+                if (!commTransactions.isEmpty()) {
                     ObjectNode commNode = objectMapper.createObjectNode();
-                    commNode.put("commerciant", c.getName());
-                    commNode.put("spent", sumPerComm);
-                    commArray.add(commNode);
+                    double totalReceived = commTransactions.stream()
+                            .mapToDouble(Transaction::getAmount)
+                            .sum();
+
+                    if(isProcessed.get(c)==false) {
+                         employeesArray = objectMapper.createArrayNode();
+                         managersArray = objectMapper.createArrayNode();
+                        // Marchează comerciantul c ca procesat (true)
+                        isProcessed.put(c, true);
+
+
+                        commArray.add(commNode);
+                        commNode.put("commerciant", c.getName());
+                        commNode.put("total received", totalReceived);
+                        commNode.set("managers", managersArray);
+
+                        commNode.set("employees", employeesArray);
+                    }
+
+                    // Calculăm suma totală primită de comerciant
+
+
+
+                    // Preluăm listele de utilizatori (angajați) care au efectuat tranzacțiile
+                    List<String> employees = new ArrayList<>();
+                    List<String> managers = new ArrayList<>();
+                    for (User user : bank.getUsers().values()) {
+                        List<Transaction> userTransactions = user.getTransactions();
+                        for (Transaction t : commTransactions) {
+                            if (userTransactions.contains(t)) {
+                                if(user.getEmployeeRole().get(command.getAccount()).equals("employee")) {
+                                    employees.add(user.getLastName() + " " + user.getFirstName());
+                                }
+                                if(user.getEmployeeRole().get(command.getAccount()).equals("manager")){
+                                    managers.add(user.getLastName() + " " + user.getFirstName());
+                                }
+                            }
+                        }
+                    }
+
+                    if(employeesArray!=null) {
+                        employees.forEach(employeesArray::add);
+                    }
+                    if(managersArray!=null){
+                        managers.forEach(managersArray::add);
+                    }
+
                 }
             }
         }
 
-        // Adăugăm lista de comercianți (goală sau cu valori) în raport
+        // Adăugăm lista de comercianți în raport
         ObjectNode outputNode = (ObjectNode) node.get("output");
         outputNode.set("commerciants", commArray);
         output.add(node);
     }
-
-
 }

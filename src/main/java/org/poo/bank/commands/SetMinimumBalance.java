@@ -23,16 +23,16 @@ public class SetMinimumBalance implements CommandPattern {
         if (account != null) {
             account.setMinimumBalance(command.getAmount());
         }
-        ObjectNode resultNode = obj.createObjectNode();
-        resultNode.put("command", "setMinimumBalance");
-        resultNode.put("timestamp", command.getTimestamp());
-
-        ObjectNode outputNode = obj.createObjectNode();
-        outputNode.put("description", "Minimum balance set successfully");
-        outputNode.put("account", account.getAccount());
-        outputNode.put("minimumBalance", command.getAmount());
-
-        resultNode.set("output", outputNode);
-        output.add(resultNode);
+//        ObjectNode resultNode = obj.createObjectNode();
+//        resultNode.put("command", "setMinimumBalance");
+//        resultNode.put("timestamp", command.getTimestamp());
+//
+//        ObjectNode outputNode = obj.createObjectNode();
+//        outputNode.put("description", "Minimum balance set successfully");
+//        outputNode.put("account", account.getAccount());
+//        outputNode.put("minimumBalance", command.getAmount());
+//
+//        resultNode.set("output", outputNode);
+//        output.add(resultNode);
     }
 }
