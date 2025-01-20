@@ -7,7 +7,9 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BusinessRepTransaction implements ReportStrategy{
@@ -34,10 +36,13 @@ public class BusinessRepTransaction implements ReportStrategy{
         double totalDepositedByEmployees = 0.0;
 
         // Găsește utilizatorii asociați IBAN-ului
-        List<User> employees = bank.getBusinessUsersPerAcc().get(command.getAccount());
 
+        List<User> employees = bank.getBusinessUsersPerAcc().get(command.getAccount());
         if(employees!=null) {
-            for (User u : employees) {
+            Set<User> uniqueEmployees = new LinkedHashSet<>(employees);
+
+
+            for (User u : uniqueEmployees) {
                 String role = u.getEmployeeRole().get(command.getAccount());
                 if (role == null || role.equals("owner")) {
                     continue; // Ignorăm proprietarul sau lipsa rolului
@@ -60,18 +65,18 @@ public class BusinessRepTransaction implements ReportStrategy{
                 // Calculăm sumele cheltuite și depuse
                 for (Transaction t : transactions) {
                     if (t.getSpent() != null) {
-                        if(role.equals("employee") && t.getSpent() <= account.getSpendingLimit()) {
+                        if (role.equals("employee") && t.getSpent() <= account.getSpendingLimit()) {
                             spent += t.getSpent();
                         }
-                        if(role.equals("manager")){
+                        if (role.equals("manager")) {
                             spent += t.getSpent();
                         }
                     }
                     if (t.getDeposited() != null) {
-                        if(role.equals("employee") && t.getDeposited() <= account.getDepositLimit()) {
+                        if (role.equals("employee") && t.getDeposited() <= account.getDepositLimit()) {
                             deposited += t.getDeposited();
                         }
-                        if(role.equals("manager")){
+                        if (role.equals("manager")) {
                             deposited += t.getDeposited();
                         }
                     }
