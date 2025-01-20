@@ -15,7 +15,7 @@ public class Account {
     private String accountType;  // daca e standard business etc
     private double interestRate;
     private double minimumBalance;
-    private double thresholdSpent;
+    //private double thresholdSpent;
     private String currency;
     private String alias;
     //private String role;

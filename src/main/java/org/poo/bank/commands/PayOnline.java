@@ -65,7 +65,9 @@ public class PayOnline implements CommandPattern {
         double amountWithDiscount = amountInCurrency * discount;
         double total = amountInCurrency - amountWithDiscount - cashback + commissionInCurrency;
 
-
+        System.out.println("cashback " + cashback);
+        System.out.println("commission " + commissionInCurrency);
+        System.out.println("total threshold " + account.getThresholdAmount());
 
 
         if (account.getAccountType().equals("business") && user.getEmployeeRole() != null && account.getAccount()!=null) {
@@ -85,9 +87,14 @@ public class PayOnline implements CommandPattern {
             }
         }
 
+//        System.out.println("balance " + account.getBalance());
+//        System.out.println("total " + total );
+//        System.out.println("dif " + (account.getBalance() - total));
+
         if (account.getBalance() < total) {
+         //   System.out.println("daca intra aici inseamna ca balance < total ");
             if (commerciant.getCashbackStrategy().equals("spendingThreshold")) {
-                account.setBalance(account.getBalance() - command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
+                account.setThresholdAmount(account.getThresholdAmount() - command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
             } else {
                 if (account.getNumberOfTransactions().containsKey(commerciant)) {
                     // Obține valoarea curentă
@@ -102,9 +109,8 @@ public class PayOnline implements CommandPattern {
             return;
         }
 
-        System.out.println("new balance  " + (account.getBalance() - total ));
-        System.out.println("cashback " + cashback);
-        System.out.println("commission " + commissionInCurrency);
+       // System.out.println("new balance  " + (account.getBalance() - total ));
+
 
 
         account.setBalance(account.getBalance() - total);

@@ -40,7 +40,7 @@ public class SendMoney implements CommandPattern {
         double commissionInCurr = exchange.findExchangeRate("RON", sender.getCurrency()) * commissionInRON;
 
         if (sendToComm != null) {
-            sender.setThresholdSpent(sender.getThresholdSpent() + command.getAmount());
+            sender.setThresholdAmount(sender.getThresholdAmount() + command.getAmount());
             Account copy = sender;
             Commerciant copyComm = sendToComm;
             cashback = bank.getCommerciants().stream()
@@ -48,7 +48,7 @@ public class SendMoney implements CommandPattern {
                             comm.getCashbackStrategy().equals("spendingThreshold"))
                     .findFirst()
                     .map(comm -> {
-                        double sum = copy.getThresholdSpent() * exchange.findExchangeRate(copy.getCurrency(), "RON");
+                        double sum = copy.getThresholdAmount() * exchange.findExchangeRate(copy.getCurrency(), "RON");
                         return Payment.threshold(sum, user, copy) * amountInRON;
                     })
                     .orElse(0.0);  // dacă nu se găsește comerciantul, cashback va fi 0
