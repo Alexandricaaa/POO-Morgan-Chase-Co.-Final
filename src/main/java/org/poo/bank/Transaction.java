@@ -467,12 +467,12 @@ public class Transaction {
         user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(t);
     }
 
-    public static void upgradePlan(CommandInput c, User user, String newPlanType){
+    public static void upgradePlan(CommandInput c, User user, String newPlanType, String iban){
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(c.getTimestamp())
                 .description("Upgrade plan")
                 .newPlanType(newPlanType)
-                .accountIBAN(c.getAccount())
+                .accountIBAN(iban)
                 .build();
         user.getTransactions().add(t);
         user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);

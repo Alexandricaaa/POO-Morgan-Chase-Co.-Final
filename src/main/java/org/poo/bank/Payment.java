@@ -88,8 +88,8 @@ public class Payment {
     }
 
 
-    public static void calculateNumberOfTransactions(Account account, Commerciant commerciant){
-        if(account.getNumberOfTransactions()!=null) {
+    public  void calculateNumberOfTransactions(Account account, Commerciant commerciant){
+        if (account.getNumberOfTransactions() != null && account.getNumberOfTransactions().containsKey(commerciant)){
             int numOfTr = account.getNumberOfTransactions().get(commerciant);
             if (numOfTr == 2) {
                 account.getIsDiscountUsed().put(2.0, true);
@@ -105,22 +105,6 @@ public class Payment {
         }
     }
 
-    public static double getDiscount(Account account, Commerciant commerciant){
-        calculateNumberOfTransactions(account, commerciant);
-        String type = commerciant.getType();
-        for (Map.Entry<Double, Boolean> entry : account.getIsDiscountUsed().entrySet()) {
-            // Verificăm dacă valoarea este true
-            if (entry.getValue()) {
-                if((entry.getKey() == 2.0 && type.equals("Food"))
-                || (entry.getKey() == 5.0 && type.equals("Clothes"))
-                || (entry.getKey() == 10.0 && type.equals("Tech"))) {
-                    account.getIsDiscountUsed().put(entry.getKey(), false);
-                    return entry.getKey();
-                }
-            }
-        }
-        return 0;
-    }
 
     public static double cashback(CommandInput command, Commerciant commerciant, Bank bank, Account account) {
         Exchange exchange = new Exchange(bank);

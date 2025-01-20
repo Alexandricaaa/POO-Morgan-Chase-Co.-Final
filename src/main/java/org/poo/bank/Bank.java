@@ -49,9 +49,9 @@ public class Bank {
     public void processCommand(CommandInput cmd, ArrayNode output, ObjectMapper obj) {
         int timestamp = cmd.getTimestamp();
         System.out.println(timestamp);
-        if(cmd.getAccount()!= null){
-            System.out.println(accountAlias.get(cmd.getAccount()));
-        }
+//        if(cmd.getAccount()!= null){
+//            System.out.println(accountAlias.get(cmd.getAccount()));
+//        }
         CommandPattern command = Factory.createCommand(cmd);
         if (command != null) {
             command.execute(cmd,obj, output, this);

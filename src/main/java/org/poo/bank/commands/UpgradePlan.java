@@ -53,7 +53,7 @@ public class UpgradePlan implements CommandPattern {
                 double newBalance = account.getBalance() - sumInAccCurrency;
                 account.setBalance(newBalance);
                 bank.updateAccountPlan(user, command.getNewPlanType());
-                Transaction.upgradePlan(command, user, command.getNewPlanType());
+                Transaction.upgradePlan(command, user, command.getNewPlanType(), command.getAccount());
             }
         }
     }

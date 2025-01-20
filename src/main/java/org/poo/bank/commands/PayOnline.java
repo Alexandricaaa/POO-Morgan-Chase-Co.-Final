@@ -6,10 +6,12 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class PayOnline implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+        Payment payment = new Payment();
         if(command.getAmount() == 0){
             return;
         }
@@ -49,6 +51,9 @@ public class PayOnline implements CommandPattern {
         }
 
         Commerciant commerciant = Commerciant.findCommerciant(command, bank, account);
+        // Verificăm dacă comerciantul nu există deja în mapa numberOfTransactions
+        //account.getNumberOfTransactions().putIfAbsent(commerciant, 0);
+
         Commerciant.incrementNumOfTr(command, bank, account);
 
         // Obține lista de comercianți pentru contul specific
@@ -67,9 +72,26 @@ public class PayOnline implements CommandPattern {
 
 
         double discount = 0;
-        if(commerciant.getCashbackStrategy().equals("nrOfTransactions")) {
-             discount = Payment.getDiscount(account, commerciant);
+       // if(commerciant.getCashbackStrategy().equals("nrOfTransactions")) {
+             //discount = payment.getDiscount(account, commerciant);
+
+       // }
+        for (Map.Entry<Double, Boolean> entry : account.getIsDiscountUsed().entrySet()) {
+            if (entry.getValue()) {
+                if(entry.getKey() == 2 && commerciant.getType().equals("Food")
+                        || entry.getKey() == 5.0 && commerciant.getType().equals("Clothes")
+                || entry.getKey() == 10.0 && commerciant.getType().equals("Tech")) {
+
+                    entry.setValue(false);
+                    discount = entry.getKey();
+                    break;
+                }
+
+                 // Ieșim din buclă după ce găsim prima valoare true
+            }
         }
+
+
         double cashback = Payment.cashback(command, commerciant, bank, account);
 
         double amountInCurrency = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
@@ -77,13 +99,15 @@ public class PayOnline implements CommandPattern {
                 command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON"));
         //double rest = amountInCurrency - commissionInCurrency;
         double commissionInCurrency = exchange.findExchangeRate("RON", account.getCurrency()) * commissionInRON;
-        double amountWithDiscount = amountInCurrency * discount;
+        double amountWithDiscount = amountInCurrency * discount /100;
         double total = amountInCurrency - amountWithDiscount - cashback + commissionInCurrency;
 
         System.out.println("cashback " + cashback);
         System.out.println("commission " + commissionInCurrency);
         System.out.println("total threshold " + account.getThresholdAmount());
-
+        System.out.println("discount " + discount);
+        System.out.println("total " + total);
+        System.out.println("amount with discount " + amountWithDiscount);
 
         if (account.getAccountType().equals("business") && user.getEmployeeRole() != null && account.getAccount()!=null) {
             if (user.getEmployeeRole().get(account.getAccount()).equals("employee")) {
@@ -127,8 +151,11 @@ public class PayOnline implements CommandPattern {
        // System.out.println("new balance  " + (account.getBalance() - total ));
 
 
+       payment.calculateNumberOfTransactions(account, commerciant);
 
+        System.out.println("new baalnce " + (account.getBalance() - total));
         account.setBalance(account.getBalance() - total);
+
         Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() ,account.getAccount());
 
         double gold = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON");
@@ -138,7 +165,7 @@ public class PayOnline implements CommandPattern {
         if(account.getPlanType()!=null) {
             if (account.getGoldUpdate() >= 5 && account.getPlanType().equals("silver")) {
                 account.setPlanType("gold");
-                Transaction.upgradePlan(command, user, "gold");
+                Transaction.upgradePlan(command, user, "gold", account.getAccount());
             }
         }
 
