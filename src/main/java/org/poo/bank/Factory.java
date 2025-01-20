@@ -49,13 +49,13 @@ public class Factory {
 
             case "spendingsReport" -> new SpendingsReport();
 
-            //treb modf
+
             case "splitPayment" -> new SplitPayment();
 
 
             case "acceptSplitPayment" -> new AcceptSplitPayment();
 
-            //treb modif
+
             case "rejectSplitPayment" -> new RejectSplitPayment();
 
             case "cashWithdrawal" -> new CashWithdrawal();

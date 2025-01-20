@@ -25,7 +25,7 @@ public class BusinessRepTransaction implements ReportStrategy{
         }
 
         // Creează nodul principal pentru raport
-        ObjectNode node = Node.createBusinessReportNode(command, account, objectMapper);
+        ObjectNode node = Node.createBusinessReportNode(command, account, objectMapper, "transaction");
 
         // Pregătește structuri pentru manageri și angajați
         ArrayNode managersArray = objectMapper.createArrayNode();

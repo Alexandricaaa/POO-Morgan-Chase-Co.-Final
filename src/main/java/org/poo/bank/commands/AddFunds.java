@@ -27,8 +27,6 @@ public class AddFunds implements CommandPattern {
                     return;
                 }
                 Transaction.deposit(command, user);
-
-
             }
         }
         account.setBalance(command.getAmount() + account.getBalance());

@@ -24,10 +24,8 @@ public class TransactionReportStrategy implements CommandPattern {
             strategy = new BusinessRepTransaction(bank);
         }
         else{
-            //strategy = new BusinessRepSpendings(bank);
+            strategy = new BusinessRepSpendings(bank);
         }
-        if(strategy != null) {
-            strategy.generateReport(command, output, obj);
-        }
+        strategy.generateReport(command, output, obj);
     }
 }

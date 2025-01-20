@@ -51,6 +51,21 @@ public class PayOnline implements CommandPattern {
         Commerciant commerciant = Commerciant.findCommerciant(command, bank, account);
         Commerciant.incrementNumOfTr(command, bank, account);
 
+        // Obține lista de comercianți pentru contul specific
+        ArrayList<Commerciant> commerciants = bank.getCommerciantsPerAcc().get(account.getAccount());
+
+// Verifică dacă lista există deja
+        if (commerciants == null) {
+            // Dacă nu există, creează o nouă listă și adaug-o în mapă
+            commerciants = new ArrayList<>();
+            bank.getCommerciantsPerAcc().put(account.getAccount(), commerciants);
+        }
+
+// Adaugă comerciantul în listă
+        commerciants.add(commerciant);
+
+
+
         double discount = 0;
         if(commerciant.getCashbackStrategy().equals("nrOfTransactions")) {
              discount = Payment.getDiscount(account, commerciant);

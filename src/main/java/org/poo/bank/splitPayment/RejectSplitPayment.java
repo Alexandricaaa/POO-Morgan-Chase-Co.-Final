@@ -15,39 +15,42 @@ public class RejectSplitPayment implements CommandPattern {
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
         User user = bank.getUsers().get(command.getEmail());
 
-        if(user == null){
-            ObjectNode node = obj.createObjectNode();
-            node.put("command", "rejectSplitPayment");
-            node.put("timestamp", command.getTimestamp());
 
-
-            ObjectNode outObj = obj.createObjectNode();
-            outObj.put("description", "User not found");
-            outObj.put("timestamp", command.getTimestamp());
-            node.set("output", outObj);
-            output.add(node);
+        if (user == null) {
+            Node.createRejectSplitPaymentNode(command, output, obj, "User not found");
             return;
         }
-        user.setRejected(true);
-        List<Transaction> transactions = user.getTransactions();
-        List<String> ibanInvolved = new ArrayList<>();
 
-        if (transactions != null) {
-            for (Transaction t : transactions) {
-                if (t.getSplitType() != null) {
-                    ibanInvolved = t.getAccountSplit();
+        Transaction target = null;
+        for (Transaction t : user.getTransactions()) {
+            if (t.getSplitType() != null && t.getSplitType().equals(command.getSplitPaymentType())
+                    && (!t.isAccept() || !t.isReject())) {
+                target = t;
+                break;
+            }
+        }
+        if (target != null) {
+            target.setReject(true);
+        }
+
+        List<Transaction> list = Bank.findTransactionList(bank.getTransactionsList(), target);
+        if (list != null) {
+            for (Transaction t : list) {
+                if (!t.isAccept()) {
+                    if (!t.isReject()) {
+                        return;
+                    }
                 }
             }
         }
-        for (String s : ibanInvolved) {
-            Account a = bank.findAccountByIBAN(s);
-            String email = bank.findUserEmailByIBAN(s);
-            List<Transaction> transactionsForOneAcc =user.getTransactions();
-            Transaction target = bank.targetTransaction(transactionsForOneAcc,
-                    command.getSplitPaymentType(),
-                    ibanInvolved);;
-            }
 
+        for (Transaction t : list) {
+            t.setError("ne user rejected the payment.");
+        }
+
+        for (Transaction t : list) {
+            t.setAllAccepted(true);
+        }
 
     }
 }

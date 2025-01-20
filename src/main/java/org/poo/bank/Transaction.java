@@ -56,6 +56,9 @@ public class Transaction {
     private Double deposited;
     private Double spent;
 
+    //pentru report
+    private boolean ignore = false;
+
 
     //builder
     private Transaction(TransactionBuilder builder) {
@@ -88,6 +91,7 @@ public class Transaction {
         this.amountEqual = builder.amountEqual;
         this.deposited = builder.deposited;
         this.spent = builder.spent;
+        this.ignore = builder.ignore;
 
     }
 
@@ -121,8 +125,13 @@ public class Transaction {
         private Double amountEqual;
         private Double deposited;
         private Double spent;
+        private boolean ignore;
 
 
+        public TransactionBuilder ignore(Boolean ignore) {
+            this.ignore = ignore;
+            return this;
+        }
         public TransactionBuilder deposited(Double deposited) {
             this.deposited = deposited;
             return this;
@@ -320,9 +329,12 @@ public class Transaction {
             transaction.getAccountSplit().forEach(accSplitArray::add);
             transactionNode.set("involvedAccounts", accSplitArray);
         }
-//        if(transaction.getAmountEqual()!=null){
-//            transactionNode.put("amount", transaction.getAmountEqual());
-//        }
+        if(transaction.getSavingsAccount()!=null){
+            transactionNode.put("savingsAccountIBAN", transaction.getSavingsAccount());
+        }
+        if(transaction.getClassicAccount()!=null){
+            transactionNode.put("classicAccountIBAN", transaction.getClassicAccount());
+        }
 
         return transactionNode;
     }
@@ -335,7 +347,19 @@ public class Transaction {
                 .build();
 
         user.getTransactions().add(transaction);
+
     }
+
+    public static void messageValidAcc(CommandInput command, User user, String description, String iban){
+        Transaction transaction = new Transaction.TransactionBuilder()
+                .timestamp(command.getTimestamp())
+                .description(description)
+                .build();
+
+        user.getTransactions().add(transaction);
+        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(transaction);
+    }
+
     public static void invalidAccType(CommandInput command, User user,  String error){
         Transaction t = new Transaction.TransactionBuilder()
                 .description(error)
@@ -343,27 +367,30 @@ public class Transaction {
                 .account(command.getAccount())
                 .build();
         user.getTransactions().add(t);
+
     }
 
 
-    public static void addTransactionForWithdrawal(CommandInput command, User user, String classicAcc){
+    public static void addTransactionForWithdrawal(CommandInput command, User user,String savings, String classicAcc){
         Transaction tr = new Transaction.TransactionBuilder()
                 .timestamp(command.getTimestamp())
                 .description("Savings withdrawal")
-                .savingsAccount(command.getAccount())
-                .savingsAccount(classicAcc)
+                .savingsAccount(savings)
+                .classicAccount(classicAcc)
                 .amount(command.getAmount())
                 .build();
         user.getTransactions().add(tr);
+        user.getTrPerAcc().computeIfAbsent(savings, k -> new ArrayList<>()).add(tr);
 
         Transaction copy = new Transaction.TransactionBuilder()
                 .timestamp(command.getTimestamp())
                 .description("Savings withdrawal")
-                .savingsAccount(command.getAccount())
-                .savingsAccount(classicAcc)
+                .savingsAccount(savings)
+                .classicAccount(classicAcc)
                 .amount(command.getAmount())
                 .build();
         user.getTransactions().add(copy);
+        user.getTrPerAcc().computeIfAbsent(classicAcc, k -> new ArrayList<>()).add(tr);
     }
 
     public static void deposit(CommandInput command, User user){
@@ -372,11 +399,13 @@ public class Transaction {
                 .account(command.getAccount())
                 .timestamp(command.getTimestamp())
                 .deposited(command.getAmount())
+                .ignore(true)
                 .build();
         user.getTransactions().add(t);
         String accountIBAN = command.getAccount();
 
         user.getTrPerAcc().computeIfAbsent(accountIBAN, k -> new ArrayList<>()).add(t);
+
     }
 
     public static void card(CommandInput command, User user, Card card, String description, String iban){
@@ -388,6 +417,7 @@ public class Transaction {
                 .account(iban)
                 .build();
         user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(t);
     }
 
     public static void addInterest(CommandInput c, User user, Account a, double amount){
@@ -398,16 +428,27 @@ public class Transaction {
                 .amount(amount)
                 .build();
         user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
     }
 
-    public static void amountInDescription(CommandInput c, User user, double amount, String description){
+    public static void amountInDescription(CommandInput c, User user, String description){
         Transaction t = new Transaction.TransactionBuilder()
                 .timestamp(c.getTimestamp())
-                .description(description + amount)
-                .amount(amount)
+                .description(description)
+                .amount(c.getAmount())
                 .build();
 
         user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
+    }
+    public static void interestChange(CommandInput c, User user, String description){
+        Transaction t = new Transaction.TransactionBuilder()
+                .timestamp(c.getTimestamp())
+                .description(description)
+                .build();
+
+        user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
     }
 
     public static void cardPayment(CommandInput c, User user, double amount, String commerciant, String iban){
@@ -434,6 +475,7 @@ public class Transaction {
                 .accountIBAN(c.getAccount())
                 .build();
         user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
     }
 
     public static void receivedMoney(CommandInput c, User user, double amount,Account receiver, Account sender){
@@ -447,10 +489,11 @@ public class Transaction {
                 .transferType("received")
                 .build();
         user.getTransactions().add(t);
+        user.getTrPerAcc().computeIfAbsent(receiver.getAccount(), k -> new ArrayList<>()).add(t);
 
     }
 
-    public static void sentMoney(CommandInput c, User user, double amount,Account receiver, Account sender){
+    public static void sentMoney(CommandInput c, User user, double amount,String receiver, Account sender){
 
         if(sender == null){
             return;
@@ -460,7 +503,7 @@ public class Transaction {
                 .amountWithCurrency(amount + " " +  sender.getCurrency())
                 .description(c.getDescription())
                 .sender(sender.getAccount())
-                .receiver(receiver.getAccount())
+                .receiver(receiver)
                 .transferType("sent")
                 .spent(amount)
                 .build();

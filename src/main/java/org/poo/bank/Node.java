@@ -44,7 +44,12 @@ public class Node {
         ArrayNode accountsArray = objectMapper.createArrayNode();
         // Procesăm fiecare cont al utilizatorului
         for (Account acc : user.getAccounts()) {
-            accountsArray.add(createAccountNode(acc, objectMapper));
+            if ("business".equals(acc.getAccountType()) && "owner".equals(user.getEmployeeRole().get(acc.getAccount()))){
+                accountsArray.add(createAccountNode(acc, objectMapper));
+            }
+            if(!"business".equals(acc.getAccountType())){
+                accountsArray.add(createAccountNode(acc, objectMapper));
+            }
         }
         userNode.set("accounts", accountsArray);
         return userNode;
@@ -56,10 +61,21 @@ public class Node {
         node.put("timestamp", timestamp);
         return node;
     }
-    public static void addErrorToNode(ObjectMapper objectMapper, ObjectNode node, String description, int timestamp) {
+    public static void addErrorWithDescrip(ObjectMapper objectMapper, ObjectNode node, String description, int timestamp) {
+        // Creăm nodul "output" cu descrierea și timestamp-ul
         ObjectNode outObj = objectMapper.createObjectNode();
         outObj.put("description", description);
         outObj.put("timestamp", timestamp);
+
+        // Setăm nodul "output" în nodul principal
+        node.set("output", outObj);
+        node.put("timestamp", timestamp); // Adăugăm timestamp-ul în nodul principal
+    }
+
+
+    public static void addErrorToNode(ObjectMapper objectMapper, ObjectNode node, String description, int timestamp) {
+        ObjectNode outObj = objectMapper.createObjectNode();
+        outObj.put("error", description);
         node.set("output", outObj);
     }
     public static ObjectNode createAccountInfoNode(ObjectMapper objectMapper, Account acc) {
@@ -89,7 +105,7 @@ public class Node {
         return commerciantsArray;
     }
 
-    public static ObjectNode createBusinessReportNode(CommandInput cmd, Account account, ObjectMapper objectMapper) {
+    public static ObjectNode createBusinessReportNode(CommandInput cmd, Account account, ObjectMapper objectMapper, String type) {
         // Creează nodul principal
         ObjectNode node = objectMapper.createObjectNode();
         node.put("command", "businessReport");
@@ -102,12 +118,31 @@ public class Node {
         outputNode.put("currency", account.getCurrency());
         outputNode.put("spending limit", account.getSpendingLimit());
         outputNode.put("deposit limit", account.getDepositLimit());
-        outputNode.put("statistics type", "transaction");
+        outputNode.put("statistics type", type);
 
         // Adaugă nodul de output la nodul principal
         node.set("output", outputNode);
 
         return node;
     }
+
+    public static void createRejectSplitPaymentNode(CommandInput command, ArrayNode output, ObjectMapper objectMapper, String description) {
+        // Creează nodul principal pentru comandă
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("command", "rejectSplitPayment");
+        node.put("timestamp", command.getTimestamp());
+
+        // Creează nodul de output pentru detaliile erorii
+        ObjectNode outputNode = objectMapper.createObjectNode();
+        outputNode.put("description", description);
+        outputNode.put("timestamp", command.getTimestamp());
+
+        // Adaugă nodul de output în nodul principal
+        node.set("output", outputNode);
+
+        // Adaugă nodul complet în lista de output
+        output.add(node);
+    }
+
 
 }

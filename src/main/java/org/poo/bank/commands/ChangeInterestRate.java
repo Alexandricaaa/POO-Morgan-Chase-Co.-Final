@@ -22,7 +22,7 @@ public class ChangeInterestRate implements CommandPattern {
         if(account!=null){
             account.setInterestRate(command.getInterestRate());
             double amount =  command.getInterestRate();
-            Transaction.amountInDescription(command, user, amount,"interest changed");
+            Transaction.interestChange(command, user,"Interest rate of the account changed to " + amount);
         }
     }
 }

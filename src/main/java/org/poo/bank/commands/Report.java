@@ -7,6 +7,7 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Report implements CommandPattern {
     @Override
@@ -32,13 +33,13 @@ public class Report implements CommandPattern {
         outObj.put("balance", account.getBalance());
         outObj.put("currency", account.getCurrency());
 
-        ArrayList<Transaction> listTr = new ArrayList<>();
-        listTr = user.getTransactions();
+        List<Transaction> listTr = new ArrayList<>();
+        listTr = user.getTrPerAcc().get(account.getAccount());
 
         if(listTr != null) {
             ArrayNode transactionsArray = obj.createArrayNode();
             listTr.stream()
-                    .filter(t -> t.getTimestamp() >= command.getTimestamp() && t.getTimestamp() <= command.getTimestamp())
+                    .filter(t -> t.getTimestamp() >= command.getStartTimestamp() && t.getTimestamp() <= command.getEndTimestamp() && !t.isIgnore())
                     .map(t -> Transaction.createTransactionOutputNode(obj, t)) // Transformăm tranzacțiile în noduri JSON
                     .forEach(transactionsArray::add);
             outObj.set("transactions", transactionsArray);

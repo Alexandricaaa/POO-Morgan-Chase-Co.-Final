@@ -48,6 +48,9 @@ public class PrintTransactions implements CommandPattern {
             if(!transaction.isAllAccepted() && transaction.getSplitType()!=null){
                 continue;
             }
+            if(transaction.isIgnore()==true){
+                continue;
+            }
             ObjectNode transactionNode = Transaction.createTransactionOutputNode(obj, transaction);
             transactionsArray.add(transactionNode);
         }

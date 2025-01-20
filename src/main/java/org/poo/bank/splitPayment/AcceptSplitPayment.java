@@ -23,7 +23,7 @@ public class AcceptSplitPayment implements CommandPattern {
         Transaction target = null;
         for(Transaction t : user.getTransactions()){
             if(t.getSplitType()!=null && t.getSplitType().equals(command.getSplitPaymentType())
-                    && !t.isAccept()){
+                    && (!t.isAccept() || t.isReject())){
                 target = t;
                 break;
             }
@@ -37,7 +37,9 @@ public class AcceptSplitPayment implements CommandPattern {
         if(list !=null){
             for(Transaction t : list){
                 if(!t.isAccept()){
-                    return;
+                    if(!t.isReject()) {
+                        return;
+                    }
                 }
             }
         }

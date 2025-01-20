@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
+import java.util.ArrayList;
+
 public class SendMoney implements CommandPattern {
     @Override
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
@@ -40,6 +42,22 @@ public class SendMoney implements CommandPattern {
         double commissionInCurr = exchange.findExchangeRate("RON", sender.getCurrency()) * commissionInRON;
 
         if (sendToComm != null) {
+
+            // Obține lista de comercianți pentru contul specific
+            ArrayList<Commerciant> commerciants = bank.getCommerciantsPerAcc().get(sender.getAccount());
+
+// Verifică dacă lista există deja
+            if (commerciants == null) {
+                // Dacă nu există, creează o nouă listă și adaug-o în mapă
+                commerciants = new ArrayList<>();
+                bank.getCommerciantsPerAcc().put(sender.getAccount(), commerciants);
+            }
+
+// Adaugă comerciantul în listă
+            commerciants.add(sendToComm);
+
+
+
             sender.setThresholdAmount(sender.getThresholdAmount() + command.getAmount());
             Account copy = sender;
             Commerciant copyComm = sendToComm;
@@ -71,10 +89,14 @@ public class SendMoney implements CommandPattern {
             User user2 = bank.getUsers().get(mail2);
             Transaction.receivedMoney(command,user2,receivedAmount, receiver,sender);
         }
+        else{
+            Transaction.sentMoney(command, user, command.getAmount(), sendToComm.getAccount(), sender);
+        }
 
         if(receiver!=null) {
-            Transaction.sentMoney(command, user, command.getAmount(), receiver, sender);
+            Transaction.sentMoney(command, user, command.getAmount(), receiver.getAccount(), sender);
         }
+
 
     }
 }

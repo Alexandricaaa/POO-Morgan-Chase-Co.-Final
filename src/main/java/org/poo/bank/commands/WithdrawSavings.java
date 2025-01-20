@@ -13,7 +13,7 @@ public class WithdrawSavings implements CommandPattern {
     public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
         Exchange exchange = new Exchange(bank);
         User user = bank.getUsers().get(command.getEmail());
-        Account account = new Account();
+        Account savings = bank.findAccountByIBAN(command.getAccount());
         Account classic = new Account();
 
         double withdrawAmount = 0.0;
@@ -27,22 +27,22 @@ public class WithdrawSavings implements CommandPattern {
         }
         for(Account a : user.getAccounts()) {
             if(a.getAccount().equals(command.getAccount())){
-                account = a;
+                savings = a;
                 break;
             }
         }
-        if(account==null){
-            Transaction.error(command, user,"Account not found" );
+        if(savings==null){
+            Transaction.error(command, user,"Account not found");
             return;
         }
 
-        if(!account.getAccountType().equals("savings")){
+        if(!savings.getAccountType().equals("savings")){
             Transaction.invalidAccType(command, user, "Account is not of type savings.");
             return;
         }
 
         if(User.userAge(user.getBirthDate()) < 21){
-            Transaction.error(command, user, "You don't have the minimum age required.");
+            Transaction.messageValidAcc(command, user, "You don't have the minimum age required.", savings.getAccount());
             return;
         }
 
@@ -51,24 +51,24 @@ public class WithdrawSavings implements CommandPattern {
             if (a.getAccountType().equals("classic")) {
                 classic = a;
                 ok = 1;
-                double rate = exchange.findExchangeRate(command.getCurrency(), account.getCurrency());
+                double rate = exchange.findExchangeRate(command.getCurrency(), savings.getCurrency());
                 double amount = rate * command.getAmount();
 
-                if (amount > account.getBalance()) {
-                    Transaction.invalidAccType(command, user, "Insufficient funds");
+                if (amount > savings.getBalance()) {
+                    Transaction.messageValidAcc(command, user, "Insufficient funds", a.getAccount());
                     return;
                 } else {
                     a.setBalance(a.getBalance() + amount);
-                    account.setBalance(account.getBalance() - amount);
+                    savings.setBalance(savings.getBalance() - amount);
 
                 }
             }
         }
 
         if(ok==0){
-            Transaction.error(command, user, "You do not have a classic account.");
+            Transaction.messageValidAcc(command, user, "You do not have a classic account.", savings.getAccount());
             return;
         }
-        Transaction.addTransactionForWithdrawal(command, user, classic.getAccount());
+        Transaction.addTransactionForWithdrawal(command, user, savings.getAccount(),  classic.getAccount());
     }
 }

@@ -13,7 +13,7 @@ public class UpgradePlan implements CommandPattern {
         ObjectNode node = Node.createNode(command.getCommand(), obj, command.getTimestamp());
         Account account = bank.findAccountByIBAN(command.getAccount());
         if (account == null) {
-            Node.addErrorToNode(obj,node, "Account not found", command.getTimestamp());
+            Node.addErrorWithDescrip(obj,node, "Account not found", command.getTimestamp());
             output.add(node);
             return;
         }
@@ -33,7 +33,7 @@ public class UpgradePlan implements CommandPattern {
 
         if(account.getPlanType()!=null) {
             if (account.getPlanType().equals(command.getNewPlanType())) {
-                Transaction.error(command, user, "The user already has the" + account.getPlanType() + " plan");
+                Transaction.messageValidAcc(command, user, "The user already has the " + account.getPlanType() + " plan.", account.getAccount());
                 return;
             }
         }
