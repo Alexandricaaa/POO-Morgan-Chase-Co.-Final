@@ -35,7 +35,7 @@ public class ChangeDepositLimit implements CommandPattern {
             output.add(node);
         }
         else{
-            account.setDepositLimit(command.getDepositLimit());
+            account.setDepositLimit(command.getAmount());
         }
     }
 }

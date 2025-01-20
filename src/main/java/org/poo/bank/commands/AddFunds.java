@@ -23,7 +23,7 @@ public class AddFunds implements CommandPattern {
                 if (role == null) {
                     return;
                 }
-                if (role.equals("employee") && command.getDepositLimit() > account.getDepositLimit()) {
+                if (role.equals("employee") && command.getAmount() > account.getDepositLimit()) {
                     return;
                 }
                 Transaction.deposit(command, user);

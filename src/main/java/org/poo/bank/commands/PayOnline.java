@@ -105,8 +105,11 @@ public class PayOnline implements CommandPattern {
         System.out.println("new balance  " + (account.getBalance() - total ));
         System.out.println("cashback " + cashback);
         System.out.println("commission " + commissionInCurrency);
+
+
         account.setBalance(account.getBalance() - total);
         Transaction.cardPayment(command, user,amountInCurrency, commerciant.getName() ,account.getAccount());
+
         double gold = command.getAmount() * exchange.findExchangeRate(command.getCurrency(), "RON");
         if (300 <= gold) {
             account.setGoldUpdate(account.getGoldUpdate() + 1);

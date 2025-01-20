@@ -60,10 +60,20 @@ public class BusinessRepTransaction implements ReportStrategy{
                 // Calculăm sumele cheltuite și depuse
                 for (Transaction t : transactions) {
                     if (t.getSpent() != null) {
-                        spent += t.getSpent();
+                        if(role.equals("employee") && t.getSpent() <= account.getSpendingLimit()) {
+                            spent += t.getSpent();
+                        }
+                        if(role.equals("manager")){
+                            spent += t.getSpent();
+                        }
                     }
                     if (t.getDeposited() != null) {
-                        deposited += t.getDeposited();
+                        if(role.equals("employee") && t.getDeposited() <= account.getDepositLimit()) {
+                            deposited += t.getDeposited();
+                        }
+                        if(role.equals("manager")){
+                            deposited += t.getDeposited();
+                        }
                     }
                 }
 
