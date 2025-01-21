@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
-import org.poo.fileio.CommandInput;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,45 +20,33 @@ public class Transaction {
     private String amountWithCurrency;
     private String transferType;
     private String commerciant;
-    private String findTransaction; // e ibanul pentru spendingsReport
-
-
+    private String findTransaction;
     private String savingsAccount;
     private String classicAccount;
     private String sender;
     private String receiver;
-
     private String cardOwner;
     private String cardNumber;
-
-    //e pentru upgrade
     private String accountIBAN;
 
-    //pentru split
     private List<String> accountSplit;
     private List<Account> involvedAccounts;
     private String splitType;
     private List<Double> amounts;
     private boolean accept = false;
     private boolean reject = false;
-    //de aici scad din balance acc
     private double amountToSplit;
-    //doar pentru splitPayment
     private String error;
     private boolean allAccepted = false;
     private String findSplitAcc;
     private Double amountEqual;
     private Boolean alreadyProcessed = false;
 
-    //pentru businessReport
     private Double deposited;
     private Double spent;
-
-    //pentru report
     private boolean ignore = false;
 
 
-    //builder
     private Transaction(TransactionBuilder builder) {
         this.account = builder.account;
         this.description = builder.description;
@@ -131,139 +116,205 @@ public class Transaction {
         private Boolean alreadyProcessed;
 
 
-        public TransactionBuilder ignore(final Boolean ignored) {
+        public final TransactionBuilder ignore(final Boolean ignored) {
             this.ignore = ignored;
             return this;
         }
-        public TransactionBuilder deposited(final  Double depositedSum) {
+        /**
+         * Sets the amount for report and returns the builder instance.
+         */
+        public final TransactionBuilder deposited(final  Double depositedSum) {
             this.deposited = depositedSum;
             return this;
         }
-
-        public TransactionBuilder spent(final  Double spentSum) {
+        /**
+         * Sets the amount for report and returns the builder instance.
+         */
+        public final TransactionBuilder spent(final  Double spentSum) {
             this.spent = spentSum;
             return this;
         }
-
-        public TransactionBuilder amountEqual(final  double amount) {
+        /**
+         * Sets the amount for equalSplit and returns the builder instance.
+         */
+        public final TransactionBuilder amountEqual(final  double amount) {
             this.amountEqual = amount;
             return this;
         }
-
-        public TransactionBuilder findSplitAcc(final  String find) {
+        /**
+         * Sets the found account and returns the builder instance.
+         */
+        public final TransactionBuilder findSplitAcc(final  String find) {
             this.findSplitAcc = find;
             return this;
         }
-
-        public TransactionBuilder error(final  String err){
+        /**
+         * Sets an error and returns the builder instance.
+         */
+        public final TransactionBuilder error(final  String err){
             this.error = err;
             return this;
         }
-        public TransactionBuilder amountToSplit(final  double amount){
+        /**
+         * Sets the amount that every account should pay and returns the builder instance.
+         */
+        public final TransactionBuilder amountToSplit(final  double amount){
             this.amountToSplit = amount;
             return this;
         }
-
-        public TransactionBuilder accountSplit(final  List<String> l){
+        /**
+         * Sets accounts involved in splitPayment and returns the builder instance.
+         */
+        public final TransactionBuilder accountSplit(final  List<String> l){
             this.accountSplit = l;
             return this;
         }
-
-        public TransactionBuilder splitType(final  String pay){
+        /**
+         * Sets split Type and returns the builder instance.
+         */
+        public final TransactionBuilder splitType(final  String pay){
             this.splitType = pay;
             return this;
         }
-
-        public TransactionBuilder amounts(final  List<Double> sum) {
+        /**
+         * Sets the amounts for every account involved in split and returns the builder instance.
+         */
+        public final TransactionBuilder amounts(final  List<Double> sum) {
             this.amounts = sum;
             return this;
         }
-
-        public TransactionBuilder findTransaction(final  String find) {
+        /**
+         * set the found transaction and returns the builder instance.
+         */
+        public final TransactionBuilder findTransaction(final  String find) {
             this.findTransaction = find;
             return this;
         }
-
-        public TransactionBuilder accountIBAN(final  String account) {
+        /**
+         * Sets the account and returns the builder instance.
+         */
+        public final TransactionBuilder accountIBAN(final  String account) {
             this.accountIBAN = account;
             return this;
         }
-
-        public TransactionBuilder commerciant(final  String comm) {
+        /**
+         * Sets the commerciant and returns the builder instance.
+         */
+        public final TransactionBuilder commerciant(final  String comm) {
             this.commerciant = comm;
             return this;
         }
 
-        public TransactionBuilder amountWithCurrency(final String amount) {
-            this.amountWithCurrency = amount;
+        /**
+         * Sets the amount with currency and returns the builder instance.
+         */
+        public final TransactionBuilder amountWithCurrency(final String amountCurr) {
+            this.amountWithCurrency = amountCurr;
             return this;
         }
-
-        public TransactionBuilder transferType(final String transfer) {
+        /**
+         * Sets the transder type and returns the builder instance.
+         */
+        public final TransactionBuilder transferType(final String transfer) {
             this.transferType = transfer;
             return this;
         }
-        public TransactionBuilder sender(final String s) {
+        /**
+         * Sets the sender Account for SplitPayment and returns the builder instance.
+         */
+        public final TransactionBuilder sender(final String s) {
             this.sender = s;
             return this;
         }
-        public TransactionBuilder receiver(final String rec) {
+        /**
+         * Sets the receiver Account for SplitPayment and returns the builder instance.
+         */
+        public final TransactionBuilder receiver(final String rec) {
             this.receiver = rec;
             return this;
         }
 
-        public TransactionBuilder newPlanType(final String newType) {
+        /**
+         * Sets the plan Type and returns the builder instance.
+         */
+        public final TransactionBuilder newPlanType(final String newType) {
             this.newPlanType = newType;
             return this;
         }
-
-        public TransactionBuilder currency(final String curr) {
+        /**
+         * Sets the currency of an account and returns the builder instance.
+         */
+        public final TransactionBuilder currency(final String curr) {
             this.currency = curr;
             return this;
         }
-
-        public TransactionBuilder cardNumber(final String cardN) {
+        /**
+         * Sets the card number and returns the builder instance.
+         */
+        public final TransactionBuilder cardNumber(final String cardN) {
             this.cardNumber = cardN;
             return this;
         }
-
-        public TransactionBuilder cardOwner(final String card) {
+        /**
+         * Sets the owner of the card and returns the builder instance.
+         */
+        public final TransactionBuilder cardOwner(final String card) {
             this.cardOwner = card;
             return this;
         }
-
-        public TransactionBuilder amount(final Double sum) {
+        /**
+         * Sets the amount and returns the builder instance.
+         */
+        public final TransactionBuilder amount(final Double sum) {
             this.amount = sum;
             return this;
         }
-
-        public TransactionBuilder savingsAccount(final String savings) {
+        /**
+         * Sets the account of type savings and returns the builder instance.
+         */
+        public final TransactionBuilder savingsAccount(final String savings) {
             this.savingsAccount = savings;
             return this;
         }
-
-        public TransactionBuilder classicAccount(final String classic) {
+        /**
+         * Sets the classic account and returns the builder instance.
+         */
+        public final TransactionBuilder classicAccount(final String classic) {
             this.classicAccount = classic;
             return this;
         }
-
-        public TransactionBuilder account(final String acc) {
+        /**
+         * Sets the account and returns the builder instance.
+         */
+        public final TransactionBuilder account(final String acc) {
             this.account = acc;
             return this;
         }
-        public TransactionBuilder description(final String desc) {
+        /**
+         * Sets the description and returns the builder instance.
+         */
+        public final TransactionBuilder description(final String desc) {
             this.description = desc;
             return this;
         }
-        public TransactionBuilder email(final String mail) {
+        /**
+         * Sets the email and returns the builder instance.
+         */
+        public final TransactionBuilder email(final String mail) {
             this.email = mail;
             return this;
         }
-        public TransactionBuilder command(final String c) {
+        /**
+         * Sets the command and returns the builder instance.
+         */
+        public final TransactionBuilder command(final String c) {
             this.command = c;
             return this;
         }
-        public TransactionBuilder timestamp(final int time) {
+        /**
+         * Sets the timestamp and returns the builder instance.
+         */
+        public final TransactionBuilder timestamp(final int time) {
             this.timestamp = time;
             return this;
         }
