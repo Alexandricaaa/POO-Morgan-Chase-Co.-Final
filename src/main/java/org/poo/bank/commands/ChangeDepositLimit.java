@@ -29,7 +29,7 @@ public class ChangeDepositLimit implements CommandPattern {
         String role = user.getEmployeeRole().get(account.getAccount());
         if(!role.equals("owner")){
             ObjectNode outObj = obj.createObjectNode();
-            outObj.put("description", "You must be owner in order to change spending limit.");
+            outObj.put("description", "You must be owner in order to change deposit limit.");
             outObj.put("timestamp", command.getTimestamp());
             node.set("output", outObj);
             output.add(node);

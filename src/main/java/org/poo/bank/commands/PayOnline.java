@@ -121,7 +121,12 @@ public class PayOnline implements CommandPattern {
                                 account.getNumberOfTransactions().put(commerciant, currentCount - 1);
                             }
                         }
+                    }else{
+                        double rate = exchange.findExchangeRate(command.getCurrency(), "RON");
+                        double sumRON = command.getAmount() * rate;
+                        account.setThresholdAmount(account.getThresholdAmount() - sumRON);
                     }
+                    return;
                 }
             }
         }
