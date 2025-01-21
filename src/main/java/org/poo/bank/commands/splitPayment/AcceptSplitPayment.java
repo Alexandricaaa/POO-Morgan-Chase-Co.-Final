@@ -8,8 +8,14 @@ import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Command for Split
+ */
 public class AcceptSplitPayment implements CommandPattern {
-
+    /**
+     * if all accounts involved in splitPayment accept, the transaction
+     * is processed
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

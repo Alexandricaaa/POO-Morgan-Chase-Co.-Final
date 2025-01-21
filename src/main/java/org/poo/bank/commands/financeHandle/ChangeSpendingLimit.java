@@ -13,7 +13,9 @@ import org.poo.fileio.CommandInput;
  * Changes the spending limit in a business account
  */
 public class ChangeSpendingLimit implements CommandPattern {
-
+    /**
+     * execute the command
+     */
     @Override
     public void execute(final CommandInput command,
                         final ObjectMapper obj,

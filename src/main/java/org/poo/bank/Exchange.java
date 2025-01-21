@@ -30,30 +30,30 @@ public class Exchange {
      * Finds the indirect exchange rate between two currencies
      * by checking available exchange routes.
      */
-    private double findIndirectRate(final String from, final String to) {
+    private double findIndirectRate(final String fromCurrency, final String toCurrency) {
 
         for (Exchange firstLeg : bank.getExchanges()) {
-            if (from.equals(firstLeg.getFrom())) {
+            if (fromCurrency.equals(firstLeg.getFrom())) {
                 String intermediary = firstLeg.getTo();
                 for (Exchange secondLeg : bank.getExchanges()) {
                     if (intermediary.equals(secondLeg.getFrom())
-                            && to.equals(secondLeg.getTo())) {
+                            && toCurrency.equals(secondLeg.getTo())) {
                         return firstLeg.getRate() * secondLeg.getRate();
                     }
-                    if (to.equals(secondLeg.getFrom())
+                    if (toCurrency.equals(secondLeg.getFrom())
                             && intermediary.equals(secondLeg.getTo())) {
                         return firstLeg.getRate() * (1 / secondLeg.getRate());
                     }
                 }
             }
-            if (from.equals(firstLeg.getTo())) {
+            if (fromCurrency.equals(firstLeg.getTo())) {
                 String intermediary = firstLeg.getFrom();
                 for (Exchange secondLeg : bank.getExchanges()) {
                     if (intermediary.equals(secondLeg.getFrom())
-                            && to.equals(secondLeg.getTo())) {
+                            && toCurrency.equals(secondLeg.getTo())) {
                         return (1 / firstLeg.getRate()) * secondLeg.getRate();
                     }
-                    if (to.equals(secondLeg.getFrom())
+                    if (toCurrency.equals(secondLeg.getFrom())
                             && intermediary.equals(secondLeg.getTo())) {
                         return (1 / firstLeg.getRate()) * (1 / secondLeg.getRate());
                     }
@@ -68,18 +68,19 @@ public class Exchange {
  * If a direct exchange rate is available, it is returned.
  * If no direct exchange exists, an indirect route is searched.
  **/
-    public double findExchangeRate(final String from, final String to) {
-        if (from.equals(to)) {
+    public double findExchangeRate(final String fromCurrency, final String toCurrency) {
+        if (fromCurrency.equals(toCurrency)) {
             return 1.0;
         }
 
         for (Exchange exchange : bank.getExchanges()) {
-            if (from.equals(exchange.getFrom()) && to.equals(exchange.getTo())) {
+            if (fromCurrency.equals(exchange.getFrom()) && toCurrency.equals(exchange.getTo())) {
                 return exchange.getRate();
-            } else if (to.equals(exchange.getFrom()) && from.equals(exchange.getTo())) {
+            } else if (toCurrency.equals(exchange.getFrom())
+                    && fromCurrency.equals(exchange.getTo())) {
                 return 1 / exchange.getRate();
             }
         }
-        return findIndirectRate(from, to);
+        return findIndirectRate(fromCurrency, toCurrency);
     }
 }

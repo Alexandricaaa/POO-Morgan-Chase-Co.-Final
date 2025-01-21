@@ -11,9 +11,18 @@ import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Command SplitPayment
+ */
 public class SplitPayment implements CommandPattern {
 
+    /**
+     *
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

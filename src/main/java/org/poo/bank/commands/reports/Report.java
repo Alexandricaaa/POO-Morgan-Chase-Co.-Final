@@ -3,12 +3,25 @@ package org.poo.bank.commands.reports;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.bank.*;
+import org.poo.bank.Bank;
+import org.poo.bank.CommandPattern;
+import org.poo.bank.User;
+import org.poo.bank.Account;
+import org.poo.bank.Transaction;
 import org.poo.fileio.CommandInput;
 import java.util.List;
 
+/**
+ *
+ */
 public class Report implements CommandPattern {
-
+    /**
+     * execute the command
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

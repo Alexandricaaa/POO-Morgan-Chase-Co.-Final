@@ -6,10 +6,16 @@ import org.poo.bank.Bank;
 import org.poo.bank.CommandPattern;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Strategy Pattern
+ */
 public class TransactionReportStrategy implements CommandPattern {
 
     public TransactionReportStrategy() { }
 
+    /**
+     * the entry point
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

@@ -10,7 +10,13 @@ import org.poo.fileio.CommandInput;
  *  Upgrades the current plan if possible
  */
 public class UpgradePlan implements CommandPattern {
-
+    /**
+     * command upgrade
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

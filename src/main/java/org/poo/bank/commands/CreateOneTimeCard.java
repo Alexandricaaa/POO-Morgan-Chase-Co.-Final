@@ -2,8 +2,13 @@ package org.poo.bank.commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.poo.bank.*;
+import org.poo.bank.Bank;
+import org.poo.bank.CommandPattern;
+import org.poo.bank.User;
+import org.poo.bank.Account;
 import org.poo.fileio.CommandInput;
+import org.poo.bank.Card;
+import org.poo.bank.BuildOneTransaction;
 
 public class CreateOneTimeCard implements CommandPattern {
     /**

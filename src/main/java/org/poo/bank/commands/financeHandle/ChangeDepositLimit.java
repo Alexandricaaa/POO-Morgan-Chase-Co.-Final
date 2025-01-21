@@ -13,7 +13,13 @@ import org.poo.fileio.CommandInput;
  *  Changes the deposit limit in a business account
  */
 public class ChangeDepositLimit implements CommandPattern {
-
+    /**
+     * execute the command
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

@@ -10,7 +10,13 @@ import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * adds an user to the business account with a specified role
+ */
 public class AddNewBusinessAssociate implements CommandPattern {
+    /**
+     * execute the command
+     */
     @Override
     public void execute(final CommandInput command,
                         final ObjectMapper obj,

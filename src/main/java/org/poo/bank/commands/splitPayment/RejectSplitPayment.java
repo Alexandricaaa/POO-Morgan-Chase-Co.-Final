@@ -7,8 +7,14 @@ import org.poo.fileio.CommandInput;
 
 import java.util.List;
 
+/**
+ * Command for Split
+ */
 public class RejectSplitPayment implements CommandPattern {
 
+    /**
+     * An error occurs if one account rejects the payment
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ *
+ */
 public class SplitCustom {
 
     private final Bank bank;

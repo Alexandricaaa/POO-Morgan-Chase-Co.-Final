@@ -13,7 +13,13 @@ import java.util.Map;
  * Show the payments made by associates
  */
 public class SpendingsReport implements CommandPattern {
-
+    /**
+     * it shows the transactions made to commerciants
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

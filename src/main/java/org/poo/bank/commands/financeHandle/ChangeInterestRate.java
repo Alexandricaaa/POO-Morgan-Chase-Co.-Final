@@ -9,7 +9,9 @@ import org.poo.fileio.CommandInput;
  * Changes the interest Rate in a savings Account
  */
 public class ChangeInterestRate implements CommandPattern {
-
+    /**
+     * execute the command
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {
