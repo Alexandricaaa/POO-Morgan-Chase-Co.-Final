@@ -6,8 +6,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import java.util.List;
 
+/**
+ * The Transaction class represents a record of a financial operation within the system.
+ * It is designed using the Builder Design Pattern to facilitate the creation of complex objects
+ * with optional and conditional parameters while maintaining immutability after construction.
+ *
+ **/
 @Data
-public class Transaction {
+public final class Transaction {
 
     private String description;
     private String email;
@@ -47,7 +53,7 @@ public class Transaction {
     private boolean ignore = false;
 
 
-    private Transaction(TransactionBuilder builder) {
+    private Transaction(final TransactionBuilder builder) {
         this.account = builder.account;
         this.description = builder.description;
         this.email = builder.email;
@@ -115,7 +121,9 @@ public class Transaction {
         private boolean ignore;
         private Boolean alreadyProcessed;
 
-
+        /**
+         * Filters transactions for SplitPayment logic and returns the builder instance.
+         */
         public final TransactionBuilder ignore(final Boolean ignored) {
             this.ignore = ignored;
             return this;
@@ -137,8 +145,8 @@ public class Transaction {
         /**
          * Sets the amount for equalSplit and returns the builder instance.
          */
-        public final TransactionBuilder amountEqual(final  double amount) {
-            this.amountEqual = amount;
+        public final TransactionBuilder amountEqual(final  double mySum) {
+            this.amountEqual = mySum;
             return this;
         }
         /**
@@ -151,28 +159,28 @@ public class Transaction {
         /**
          * Sets an error and returns the builder instance.
          */
-        public final TransactionBuilder error(final  String err){
+        public final TransactionBuilder error(final  String err) {
             this.error = err;
             return this;
         }
         /**
          * Sets the amount that every account should pay and returns the builder instance.
          */
-        public final TransactionBuilder amountToSplit(final  double amount){
-            this.amountToSplit = amount;
+        public final TransactionBuilder amountToSplit(final  double amountForSplit) {
+            this.amountToSplit = amountForSplit;
             return this;
         }
         /**
          * Sets accounts involved in splitPayment and returns the builder instance.
          */
-        public final TransactionBuilder accountSplit(final  List<String> l){
+        public final TransactionBuilder accountSplit(final  List<String> l) {
             this.accountSplit = l;
             return this;
         }
         /**
          * Sets split Type and returns the builder instance.
          */
-        public final TransactionBuilder splitType(final  String pay){
+        public final TransactionBuilder splitType(final  String pay) {
             this.splitType = pay;
             return this;
         }
@@ -193,8 +201,8 @@ public class Transaction {
         /**
          * Sets the account and returns the builder instance.
          */
-        public final TransactionBuilder accountIBAN(final  String account) {
-            this.accountIBAN = account;
+        public final TransactionBuilder accountIBAN(final  String myAccount) {
+            this.accountIBAN = myAccount;
             return this;
         }
         /**
@@ -318,12 +326,17 @@ public class Transaction {
             this.timestamp = time;
             return this;
         }
+        /**
+         * Builds and returns a Transaction instance using Builder DesignPattern.
+         */
+
         public Transaction build() {
             return new Transaction(this);
         }
     }
 
-    public static  ObjectNode createTransactionOutputNode(final ObjectMapper objectMapper, final Transaction transaction) {
+    public static  ObjectNode createTransactionOutputNode(final ObjectMapper objectMapper,
+                                                          final Transaction transaction) {
         ObjectNode transactionNode = objectMapper.createObjectNode();
         transactionNode.put("timestamp", transaction.getTimestamp());
         transactionNode.put("description", transaction.getDescription());
@@ -391,7 +404,4 @@ public class Transaction {
 
         return transactionNode;
     }
-
-
-
 }
