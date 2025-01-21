@@ -21,7 +21,12 @@ public class Commerciant {
         this.name = commerciant.getCommerciant();
     }
 
-    public static Commerciant findCommerciant(final CommandInput command,
+/**
+ * Finds a commerciant based on the given command and adds it
+ * to the account's commerciants list if not already present.
+ *
+ **/
+ public static Commerciant findCommerciant(final CommandInput command,
                                               final Bank bank, final Account a) {
         boolean found = false;
         for (Commerciant commerciant : bank.getCommerciants()) {
@@ -41,6 +46,12 @@ public class Commerciant {
         return null;
     }
 
+/**
+ * Increments the number of transactions for a commerciant associated with
+ * a specific account.
+ * If the commerciant uses a different cashback strategy than
+ * "nrOfTransactions", the account's threshold amount is updated.
+ **/
     public static void incrementNumOfTr(final CommandInput command, final Bank bank,
                                         final Account account) {
 

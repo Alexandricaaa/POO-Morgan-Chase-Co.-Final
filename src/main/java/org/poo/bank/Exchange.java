@@ -2,7 +2,11 @@ package org.poo.bank;
 
 import lombok.Data;
 import org.poo.fileio.ExchangeInput;
-
+/**
+ * Represents a currency exchange rate between two currencies.
+ * Provides functionality to find the exchange rate between currencies directly
+ * or through indirect conversion paths using available exchange rates.
+ */
 @Data
 public class Exchange {
 
@@ -22,6 +26,10 @@ public class Exchange {
         this.bank = bank;
     }
 
+    /**
+     * Finds the indirect exchange rate between two currencies
+     * by checking available exchange routes.
+     */
     private double findIndirectRate(final String from, final String to) {
 
         for (Exchange firstLeg : bank.getExchanges()) {
@@ -55,6 +63,11 @@ public class Exchange {
         return 0.0;
     }
 
+/**
+ * Finds the exchange rate between two currencies.
+ * If a direct exchange rate is available, it is returned.
+ * If no direct exchange exists, an indirect route is searched.
+ **/
     public double findExchangeRate(final String from, final String to) {
         if (from.equals(to)) {
             return 1.0;

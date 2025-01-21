@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Show the payments made by associates
+ */
 public class SpendingsReport implements CommandPattern {
 
     @Override
@@ -58,7 +61,8 @@ public class SpendingsReport implements CommandPattern {
                         });
 
                 outObj.set("transactions", transactionArray);
-                outObj.set("commerciants", Node.createCommerciantsArray(commerciantTotals, obj));
+                outObj.set("commerciants",
+                        Node.createCommerciantsArray(commerciantTotals, obj));
             }
             node.set("output", outObj);
             output.add(node);

@@ -9,9 +9,17 @@ import org.poo.bank.commands.splitPayment.AcceptSplitPayment;
 import org.poo.bank.commands.splitPayment.RejectSplitPayment;
 import org.poo.bank.commands.splitPayment.SplitPayment;
 import org.poo.fileio.CommandInput;
-
+/**
+ * A factory class responsible for creating instances of various command patterns
+ * based on the provided command input.
+ */
 public class Factory {
-
+    /**
+     * Creates and returns a specific command object based on the given command input.
+     *
+     * @param command The input command that specifies which command object to create.
+     * @return The corresponding CommandPattern object, or null if no matching command is found.
+     */
     public static CommandPattern createCommand(final CommandInput command) {
 
         return switch (command.getCommand()) {

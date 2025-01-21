@@ -5,8 +5,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import java.util.Map;
+/**
+ * Class that provides a node with the specified details to the provided output array.
+ */
 
 public class Node {
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ObjectNode createCardNode(final Card card, final ObjectMapper objectMapper) {
         ObjectNode cardNode = objectMapper.createObjectNode();
@@ -14,6 +20,9 @@ public class Node {
         cardNode.put("status", card.getStatus());
         return cardNode;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ObjectNode createUserNode(final User user, final ObjectMapper objectMapper) {
         ObjectNode userNode = objectMapper.createObjectNode();
@@ -34,6 +43,9 @@ public class Node {
         userNode.set("accounts", accountsArray);
         return userNode;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ObjectNode createAccountNode(final Account account,
                                                final ObjectMapper objectMapper) {
@@ -50,6 +62,9 @@ public class Node {
         accountNode.set("cards", cardsArray);
         return accountNode;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ObjectNode createNode(final String command,
                                         final ObjectMapper objectMapper, final int timestamp) {
@@ -58,6 +73,10 @@ public class Node {
         node.put("timestamp", timestamp);
         return node;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
+
     public static void addErrorWithDescrip(final ObjectMapper objectMapper, final ObjectNode node,
                                            final String description, final int timestamp) {
         ObjectNode outObj = objectMapper.createObjectNode();
@@ -67,6 +86,9 @@ public class Node {
         node.set("output", outObj);
         node.put("timestamp", timestamp);
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static void addErrorToNode(final ObjectMapper objectMapper, final ObjectNode node,
                                       final String description, final int timestamp) {
@@ -74,6 +96,10 @@ public class Node {
         outObj.put("error", description);
         node.set("output", outObj);
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
+
     public static ObjectNode createAccountInfoNode(final ObjectMapper objectMapper,
                                                    final Account acc) {
         ObjectNode outObj = objectMapper.createObjectNode();
@@ -82,6 +108,10 @@ public class Node {
         outObj.put("currency", acc.getCurrency());
         return outObj;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
+
     public static void addTransaction(final ArrayNode transactionArray, final Transaction t,
                                       final ObjectMapper objectMapper) {
         ObjectNode transactionNode = objectMapper.createObjectNode();
@@ -91,6 +121,9 @@ public class Node {
         transactionNode.put("commerciant", t.getCommerciant());
         transactionArray.add(transactionNode);
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ArrayNode createCommerciantsArray(final Map<String, Double> commerciantTotals,
                                                     final ObjectMapper objectMapper) {
@@ -103,6 +136,9 @@ public class Node {
         });
         return commerciantsArray;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static ObjectNode createBusinessReportNode(final CommandInput cmd,
                                                       final Account account,
@@ -123,6 +159,9 @@ public class Node {
         node.set("output", outputNode);
         return node;
     }
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static void createRejectSplitPaymentNode(final CommandInput command,
                                                     final ArrayNode output,
@@ -138,6 +177,10 @@ public class Node {
         node.set("output", outputNode);
         output.add(node);
     }
+
+    /**
+     * Adds a new command node with the specified details to the provided output array.
+     */
 
     public static void addCommandNode(final ArrayNode output,
                                       final ObjectMapper objectMapper,

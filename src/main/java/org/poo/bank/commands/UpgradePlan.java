@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
+/**
+ *  Upgrades the current plan if possible
+ */
 public class UpgradePlan implements CommandPattern {
 
     @Override
@@ -56,7 +59,7 @@ public class UpgradePlan implements CommandPattern {
             double sumInAccCurrency = rate * sumInRON;
 
             if (account.getBalance() < sumInAccCurrency) {
-                BuildOneTransaction.error(command, user,"Insufficient funds");
+                BuildOneTransaction.error(command, user, "Insufficient funds");
             } else {
                 double newBalance = account.getBalance() - sumInAccCurrency;
                 account.setBalance(newBalance);
