@@ -7,9 +7,11 @@ import org.poo.fileio.CommandInput;
 
 public class CreateOneTimeCard implements CommandPattern {
     @Override
-    public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+    public void execute(final CommandInput command,
+                        final ObjectMapper obj,
+                        final ArrayNode output,
+                        final Bank bank) {
         User user = bank.getUsers().get(command.getEmail());
-
         Card oneTimeCard = new Card();
         oneTimeCard.setOneTime(true);
 
@@ -18,6 +20,7 @@ public class CreateOneTimeCard implements CommandPattern {
             return;
         }
         account.getCards().add(oneTimeCard);
-        Transaction.card(command, user, oneTimeCard, "New card created", account.getAccount());
+        BuildOneTransaction.card(command, user, oneTimeCard,
+                "New card created", account.getAccount());
     }
 }

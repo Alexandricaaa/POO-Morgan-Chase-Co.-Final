@@ -9,21 +9,23 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
 public class SetAlias implements CommandPattern {
+
     @Override
-    public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+    public void execute(final CommandInput command, final ObjectMapper obj,
+                        final ArrayNode output, final Bank bank) {
         boolean accountFound = false;
         Account a = null;
         User user = bank.getUsers().get(command.getEmail());
-        for(Account account : user.getAccounts()) {
-            if(account.getAccount().equals(command.getAccount())) {
+        for (Account account : user.getAccounts()) {
+            if (account.getAccount().equals(command.getAccount())) {
                 a = account;
                 accountFound = true;
                 break;
             }
         }
-        if(accountFound) {
+        if (accountFound) {
             a.setAlias(command.getAlias());
-            bank.getAccountAlias().put(command.getAlias(),command.getAccount() );
+            bank.getAccountAlias().put(command.getAlias(), command.getAccount());
         }
     }
 }

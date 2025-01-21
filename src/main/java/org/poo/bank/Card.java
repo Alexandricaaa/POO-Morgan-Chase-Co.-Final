@@ -10,12 +10,11 @@ public class Card {
     private boolean oneTime = false;
     private boolean isFrozen = false;
 
-    public Card(){
+    public Card() {
         cardNumber = Utils.generateCardNumber();
     }
 
-
-    public Card(Card card) {
+    public Card(final Card card) {
         this.cardNumber = card.getCardNumber();
         this.status = card.getStatus();
     }

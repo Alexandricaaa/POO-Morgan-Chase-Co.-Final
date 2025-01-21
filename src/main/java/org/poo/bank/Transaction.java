@@ -260,8 +260,8 @@ public class Transaction {
             return this;
         }
         public TransactionBuilder email(String email){
-             this.email = email;
-             return this;
+            this.email = email;
+            return this;
         }
         public TransactionBuilder command(String command){
             this.command = command;

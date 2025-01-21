@@ -1,4 +1,4 @@
-package org.poo.bank.commands;
+package org.poo.bank.commands.financeHandle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -10,15 +10,19 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
 public class ChangeSpendingLimit implements CommandPattern {
+
     @Override
-    public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+    public void execute(final CommandInput command,
+                        final ObjectMapper obj,
+                        final ArrayNode output, final Bank bank) {
         ObjectNode node = obj.createObjectNode();
         node.put("command", "changeSpendingLimit");
         node.put("timestamp", command.getTimestamp());
 
         User user = bank.getUsers().get(command.getEmail());
         Account account = bank.findAccount(user, command.getAccount());
-        if(!account.getAccountType().equals("business")){
+
+        if (!account.getAccountType().equals("business")) {
             ObjectNode outObj = obj.createObjectNode();
             outObj.put("description", "This is not a business account");
             outObj.put("timestamp", command.getTimestamp());
@@ -26,15 +30,17 @@ public class ChangeSpendingLimit implements CommandPattern {
             output.add(node);
             return;
         }
+
         String role = user.getEmployeeRole().get(account.getAccount());
-        if(!role.equals("owner")){
+
+        if (!role.equals("owner")) {
             ObjectNode outObj = obj.createObjectNode();
-            outObj.put("description", "You must be owner in order to change spending limit.");
+            outObj.put("description",
+                    "You must be owner in order to change spending limit.");
             outObj.put("timestamp", command.getTimestamp());
             node.set("output", outObj);
             output.add(node);
-        }
-        else{
+        } else {
             account.setSpendingLimit(command.getAmount());
         }
     }

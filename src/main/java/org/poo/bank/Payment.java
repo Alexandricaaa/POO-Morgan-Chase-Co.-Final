@@ -7,11 +7,14 @@ import java.util.Map;
 
 public class Payment {
 
-    public static double commission(String planType, double amount) {
+    private static final double STUDENT_TO_GOLD = 350;
+    private static final double STUDENT_TO_SILVER = 100;
+    private static final double SILVER_TO_GOLD = 250;
+
+    public static double commission(String planType, final double amount) {
         if (planType == null) {
             return 0.0;
         }
-
         planType = planType.toLowerCase();
 
         switch (planType) {
@@ -29,67 +32,60 @@ public class Payment {
                 return amount * 0.002;
             }
         }
-
         return 0.0;
     }
 
-    public static double threshold(double sum, User user, Account account) {
+    public static double threshold(final double sum, final User user, final Account account) {
         double ret = 0;
         String plan = account.getPlanType();
 
-        // Dacă tipul contului este business, folosim planul acestuia
         if (account.getAccountType().equals("business")) {
             plan = account.getPlanType();
         }
 
-        // Folosim un switch pentru a determina comisionul în funcție de tipul planului
-        if(plan==null){
+        if (plan == null) {
             return 0.0;
         }
         switch (plan.toLowerCase()) {
             case "standard":
             case "student":
                 if (sum >= 100 && sum < 300) {
-                    ret = 0.001; // 0.1%
+                    ret = 0.001;
                 } else if (sum >= 300 && sum < 500) {
-                    ret = 0.002; // 0.2%
+                    ret = 0.002;
                 } else if (sum >= 500) {
-                    ret = 0.0025; // 0.25%
+                    ret = 0.0025;
                 }
                 break;
 
             case "silver":
                 if (sum >= 100 && sum < 300) {
-                    ret = 0.003; // 0.3%
+                    ret = 0.003;
                 } else if (sum >= 300 && sum < 500) {
-                    ret = 0.004; // 0.4%
+                    ret = 0.004;
                 } else if (sum >= 500) {
-                    ret = 0.005; // 0.5%
+                    ret = 0.005;
                 }
                 break;
 
             case "gold":
                 if (sum >= 100 && sum < 300) {
-                    ret = 0.005; // 0.5%
+                    ret = 0.005;
                 } else if (sum >= 300 && sum < 500) {
-                    ret = 0.0055; // 0.55%
+                    ret = 0.0055;
                 } else if (sum >= 500) {
-                    ret = 0.007; // 0.7%
+                    ret = 0.007;
                 }
                 break;
-
-
             default:
-                ret = 0; // În caz de plan necunoscut, nu se aplică comision
+                ret = 0;
                 break;
         }
-
         return ret;
     }
 
-
-    public  void calculateNumberOfTransactions(Account account, Commerciant commerciant){
-        if (account.getNumberOfTransactions() != null && account.getNumberOfTransactions().containsKey(commerciant)){
+    public  void calculateNumberOfTransactions(final Account account, final Commerciant commerciant) {
+        if (account.getNumberOfTransactions() != null && account.getNumberOfTransactions().containsKey(commerciant)) {
             int numOfTr = account.getNumberOfTransactions().get(commerciant);
             if (numOfTr == 2) {
                 account.getIsDiscountUsed().put(2.0, true);
@@ -105,14 +101,14 @@ public class Payment {
         }
     }
 
-
-    public static double cashback(CommandInput command, Commerciant commerciant, Bank bank, Account account) {
+    public static double cashback(final CommandInput command, final Commerciant commerciant,
+                                  final Bank bank, final Account account) {
         Exchange exchange = new Exchange(bank);
-        User user = bank.getUsers().get(bank.findUserEmailByIBAN(account.getAccount()));
+        User user = bank.getUsers().get(bank.getEmailForAccountIBAN(account.getAccount()));
         Commerciant c = Commerciant.findCommerciant(command, bank, account);
         double rate = 0.0;
         double amount = 0.0;
-        if(c!=null){
+        if (c != null) {
             if(c.getCashbackStrategy().equals("spendingThreshold")){
                 rate = exchange. findExchangeRate(command.getCurrency(), account.getCurrency());
                 amount = threshold(account.getThresholdAmount(), user, account ) * command.getAmount();
@@ -122,22 +118,15 @@ public class Payment {
         return 0.0;
     }
 
-    public static  double getUpgradeFee(String currentPlan, String newPlan) {
-        // Mapele pentru upgrade-uri
+    public static  double getUpgradeFee(final String currentPlan, final String newPlan) {
         Map<String, Double> upgradeFees = new HashMap<>();
+        upgradeFees.put("standard_to_silver", STUDENT_TO_SILVER);
+        upgradeFees.put("student_to_silver", STUDENT_TO_SILVER);
+        upgradeFees.put("silver_to_gold", SILVER_TO_GOLD);
+        upgradeFees.put("standard_to_gold", STUDENT_TO_GOLD);
+        upgradeFees.put("student_to_gold", STUDENT_TO_GOLD);
 
-        // Adăugăm taxele pentru upgrade
-        upgradeFees.put("standard_to_silver", 100.0);
-        upgradeFees.put("student_to_silver", 100.0);
-        upgradeFees.put("silver_to_gold", 250.0);
-        upgradeFees.put("standard_to_gold", 350.0);
-        upgradeFees.put("student_to_gold", 350.0);
-
-        // Formăm cheia pentru upgrade
         String key = currentPlan.toLowerCase() + "_to_" + newPlan.toLowerCase();
-
-        // Returnăm taxa de upgrade dacă există, altfel 0
         return upgradeFees.getOrDefault(key, 0.0);
     }
-
 }

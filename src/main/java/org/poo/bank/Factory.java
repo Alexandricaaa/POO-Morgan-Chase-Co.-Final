@@ -1,16 +1,19 @@
 package org.poo.bank;
 
 import org.poo.bank.commands.*;
-import org.poo.bank.commands.businessReport.TransactionReportStrategy;
-import org.poo.bank.splitPayment.AcceptSplitPayment;
-import org.poo.bank.splitPayment.RejectSplitPayment;
-import org.poo.bank.splitPayment.SplitPayment;
+import org.poo.bank.commands.reports.businessReport.TransactionReportStrategy;
+import org.poo.bank.commands.financeHandle.*;
+import org.poo.bank.commands.reports.Report;
+import org.poo.bank.commands.reports.SpendingsReport;
+import org.poo.bank.commands.splitPayment.AcceptSplitPayment;
+import org.poo.bank.commands.splitPayment.RejectSplitPayment;
+import org.poo.bank.commands.splitPayment.SplitPayment;
 import org.poo.fileio.CommandInput;
 
 public class Factory {
 
+    public static CommandPattern createCommand(final CommandInput command) {
 
-    public static CommandPattern createCommand(CommandInput command) {
         return switch (command.getCommand()) {
 
             case "printUsers" -> new PrintUsers();
@@ -64,7 +67,7 @@ public class Factory {
 
             case "payOnline" -> new PayOnline();
 
-            case "printTransactions" ->new PrintTransactions();
+            case "printTransactions" -> new PrintTransactions();
 
             default -> null;
         };

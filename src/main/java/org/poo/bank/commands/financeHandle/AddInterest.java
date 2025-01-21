@@ -1,4 +1,4 @@
-package org.poo.bank.commands;
+package org.poo.bank.commands.financeHandle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -6,22 +6,27 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 public class AddInterest implements CommandPattern {
+
     @Override
-    public void execute(CommandInput command, ObjectMapper obj, ArrayNode output, Bank bank) {
+    public void execute(final CommandInput command, final ObjectMapper obj,
+                        final ArrayNode output, final Bank bank) {
         User user = bank.getUsers().get(command.getEmail());
-        if(user==null){
-            String email = bank.findUserEmailByIBAN(command.getAccount());
+
+        if (user == null) {
+            String email = bank.getEmailForAccountIBAN(command.getAccount());
             user = bank.getUsers().get(email);
-            if(user == null){
+
+            if (user == null) {
                 return;
             }
         }
         Account account = bank.findAccount(user, command.getAccount());
         double interest = 0.0;
-        if(account.getAccountType().equals("savings")){
+
+        if (account.getAccountType().equals("savings")) {
             interest = account.getBalance() * account.getInterestRate();
         }
         account.setBalance(account.getBalance() + interest);
-        Transaction.addInterest(command,user,account,interest);
+        BuildOneTransaction.addInterest(command, user, account,  interest);
     }
 }

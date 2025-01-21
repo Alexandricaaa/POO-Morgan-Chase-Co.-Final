@@ -1,5 +1,4 @@
 package org.poo.bank;
-
 import lombok.Data;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
@@ -11,56 +10,43 @@ public class Account {
 
     private String account;
     private double balance;
-    private String planType;  // silver gold
-    private String accountType;  // daca e standard business etc
+    private String planType;
+    private String accountType;
     private double interestRate;
     private double minimumBalance;
-    //private double thresholdSpent;
     private String currency;
     private String alias;
-    //private String role;
-
     private double depositLimit;
     private double spendingLimit;
-
     private int goldUpdate = 0;
     private double split = 0.0;
-
     private boolean accepted;
 
     private ArrayList<Card> cards = new ArrayList<>();
-
-
     private Map<Commerciant, Integer> numberOfTransactions = new HashMap<>();
-
     private ArrayList<Commerciant> commerciants = new ArrayList<>();
     private double thresholdAmount = 0.0;
 
-    //double = discountul, boolean daca a fost folosit sau nu
     private Map<Double, Boolean> isDiscountUsed = new HashMap<>();
-
     private Map<Transaction, Double> businessSpendings = new LinkedHashMap<>();
     private Map<Transaction, Double> businessDeposit = new LinkedHashMap<>();
-
     private List<User> businessUsers = new ArrayList<>();
+    private static final int BUSINESS_LIMIT = 500;
 
-
-    public Account(){
+    public Account() {
         this.accepted = false;
     }
 
     //deep copy
-    public Account(Account a){
+    public Account(final Account a) {
         this.account = a.account;
         this.balance = a.balance;
         this.accountType = a.accountType;
         this.cards = new ArrayList<>();
-        for(Card card : a.cards){
-            this.cards.add(card);
-        }
+        this.cards.addAll(a.cards);
     }
 
-    public Account(CommandInput input){
+    public Account(final CommandInput input) {
         account = Utils.generateIBAN();
         balance = 0.0;
         currency = input.getCurrency();
@@ -69,22 +55,11 @@ public class Account {
         this.accepted = false;
     }
 
-
-
-    public void initializeTransactions(ArrayList<Commerciant> commerciants) {
-        for (Commerciant commerciant : commerciants) {
-            numberOfTransactions.put(commerciant, 0);
-        }
-    }
-
-
-    public static void PlanType(Account account, User user) {
+    public static void planType(final Account account, final User user) {
         String plan = null;
-        int ok = 0;
-        for(Account a : user.getAccounts()){
-            if(a.getPlanType() != null){
+        for (Account a : user.getAccounts()) {
+            if (a.getPlanType() != null) {
                 plan = a.getPlanType();
-                ok = 1;
                 break;
             }
         }
@@ -94,14 +69,16 @@ public class Account {
         } else {
             if (user.getOccupation().equals("student")) {
                 account.setPlanType("student");
-            }
-            else{
+            } else {
                 account.setPlanType("standard");
             }
         }
     }
 
-    public static void configureAccountByType(Bank bank, Account account, User user, CommandInput cmd) {
+    public static void configureAccountByType(final Bank bank,
+                                              final Account account,
+                                              final User user,
+                                              final CommandInput cmd) {
         switch (cmd.getAccountType()) {
             case "savings":
                 account.setInterestRate(cmd.getInterestRate());
@@ -109,33 +86,25 @@ public class Account {
             case "business":
                 configureBusinessAccount(bank, account, user, cmd);
                 break;
+
             default:
                 break;
         }
     }
 
-    public static void configureBusinessAccount(Bank bank, Account account, User user, CommandInput cmd) {
-        //user.getRole().put(account.getIBAN(), "owner");
-
+    public static void configureBusinessAccount(final Bank bank,
+                                                final Account account,
+                                                final User user,
+                                                final CommandInput cmd) {
         Exchange exchange = new Exchange(bank);
-       if(user.getPlan()!=null) {
+       if (user.getPlan() != null) {
            account.setPlanType(user.getPlan());
        }
         user.getEmployeeRole().put(account.getAccount(), "owner");
-        //account.getAssociates().add(user);
 
-
-        double depositLimit = exchange.findExchangeRate("RON", cmd.getCurrency()) * 500;
+        double depositLimit = exchange.findExchangeRate("RON", cmd.getCurrency()) * BUSINESS_LIMIT;
         account.setDepositLimit(depositLimit);
-        account.setSpendingLimit(depositLimit); // Același calcul pentru spending limit
-    }
-
-    @Override
-    public String toString() {
-        // Nu pune referințe la utilizatori, doar informațiile relevante ale contului
-        return "Account{" +
-                "accountNumber='" + account + '\'' +
-                '}';
+        account.setSpendingLimit(depositLimit);
     }
 }
 

@@ -2,7 +2,6 @@ package org.poo.bank;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Data;
 import org.poo.fileio.*;
 import org.poo.utils.Utils;
@@ -13,22 +12,15 @@ import java.util.stream.IntStream;
 @Data
 public class Bank {
 
-    private ArrayList<Commerciant> commerciants = new ArrayList<>();  // aici se afla toti comm dintr-un test
-    public  ArrayList<Exchange> exchanges = new ArrayList<>();
+    private ArrayList<Commerciant> commerciants = new ArrayList<>();
+    private ArrayList<Exchange> exchanges = new ArrayList<>();
     private Map<String, User> users = new LinkedHashMap<>();
     private Map<String, ArrayList<Commerciant>> commerciantsPerAcc = new HashMap<>();
     private Map<String, String> accountAlias = new HashMap<>();
-
-    //cheia este ibanu
-    //nu se afla si ownerul
     private Map<String, List<User>> businessUsersPerAcc = new LinkedHashMap<>();
+    private Map<List<Transaction>, Boolean> transactionsList =  new HashMap<>();
 
-    //pentru split
-    Map<List<Transaction>, Boolean> transactionsList =  new HashMap<>();
-
-
-
-    public Bank(ObjectInput input) {
+    public Bank(final ObjectInput input) {
         Utils.resetRandom();
 
         for (CommerciantInput commerciant : input.getCommerciants()) {
@@ -40,40 +32,31 @@ public class Bank {
             users.put(myUser.getEmail(), myUser);
         }
 
-        for(ExchangeInput exchange : input.getExchangeRates()){
+        for (ExchangeInput exchange : input.getExchangeRates()) {
             Exchange myExchange = new Exchange(exchange);
             exchanges.add(myExchange);
         }
     }
 
-    public void processCommand(CommandInput cmd, ArrayNode output, ObjectMapper obj) {
-        int timestamp = cmd.getTimestamp();
-        System.out.println(timestamp);
-//        if(cmd.getAccount()!= null){
-//            System.out.println(accountAlias.get(cmd.getAccount()));
-//        }
+    public void processCommand(final CommandInput cmd,
+                               final ArrayNode output,
+                               final ObjectMapper obj) {
         CommandPattern command = Factory.createCommand(cmd);
         if (command != null) {
-            command.execute(cmd,obj, output, this);
-        } else {
-
-            System.out.println("Unknown command start debug : " + cmd.getCommand());
+            command.execute(cmd, obj, output, this);
         }
     }
 
-//    public ArrayList<Exchange> getExchanges() {
-//        return exchanges;
-//    }
-
-    public Account findAccount(User user, String iban){
-        for(Account account : user.getAccounts()){
-            if(account.getAccount().equals(iban)){
+    public Account findAccount(final User user, final String iban) {
+        for (Account account : user.getAccounts()) {
+            if (account.getAccount().equals(iban)) {
                 return account;
             }
         }
         return null;
     }
-    public Account findAccountByIBAN(String iban) {
+
+    public Account findAccountByIBAN(final String iban) {
         for (User u : this.getUsers().values()) {
             for (Account acc : u.getAccounts()) {
                 if (acc.getAccount().equals(iban)) {
@@ -84,7 +67,7 @@ public class Bank {
         return null;
     }
 
-    public String findUserEmailByIBAN(String iban) {
+    public String getEmailForAccountIBAN(final String iban) {
         for (User u : users.values()) {
             for (Account acc : u.getAccounts()) {
                 if (acc.getAccount().equals(iban)) {
@@ -95,7 +78,7 @@ public class Bank {
         return null;
     }
 
-    public Account findAccountByCardNumber(String cardNumber) {
+    public Account getAccountUsingCardNumber(final String cardNumber) {
         for (User u : users.values()) {
             for (Account acc : u.getAccounts()) {
                 for (Card c : acc.getCards()) {
@@ -108,46 +91,25 @@ public class Bank {
         return null;
     }
 
-    public boolean isMyAccount(User user, String iban){
-        for(Account acc : user.getAccounts()){
-            if(acc.getAccount().equals(iban)){
+    public boolean isMyAccount(final User user, final String iban) {
+        for (Account acc : user.getAccounts()) {
+            if (acc.getAccount().equals(iban)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static void addCommandNode(ArrayNode output, ObjectMapper objectMapper,
-                                      String commandType, String description, int timestamp) {
-        // Creează nodul principal pentru comanda
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("command", commandType);
-
-        // Creează nodul interior pentru output
-        ObjectNode outputNode = objectMapper.createObjectNode();
-        outputNode.put("description", description);
-        outputNode.put("timestamp", timestamp);
-
-        // Adaugă nodul de output la nodul principal
-        node.set("output", outputNode);
-        node.put("timestamp", timestamp);
-
-        // Adaugă nodul final la array-ul de output
-        output.add(node);
-    }
-
-    public static Card findCardInAccount(Account account, CommandInput command) {
+    public static Card findCardInAccount(final Account account, final CommandInput command) {
         return account.getCards().stream()
                 .filter(card -> card.getCardNumber().equals(command.getCardNumber()))
                 .findFirst()
-                .orElse(null); // Returnează null dacă nu găsește cardul
+                .orElse(null);
     }
 
-
-    public static boolean isUpgrade(String currentPlan, String newPlan) {
+    public static boolean isUpgrade(final String currentPlan, final String newPlan) {
         List<String> plans = Arrays.asList("standard", "student", "silver", "gold");
 
-        // Folosim lambda pentru a obține indexurile
         int currentIndex = IntStream.range(0, plans.size())
                 .filter(i -> plans.get(i).equalsIgnoreCase(currentPlan))
                 .findFirst()
@@ -161,40 +123,20 @@ public class Bank {
         return newIndex > currentIndex;
     }
 
-    public void updateAccountPlan(User user, String newPlan) {
-        // Actualizăm planul pentru fiecare cont al utilizatorului folosind lambda
+    public void updateAccountPlan(final User user, final String newPlan) {
         user.getAccounts().forEach(account -> account.setPlanType(newPlan));
-
     }
 
+    public static List<Transaction> findTransactionList(final Map<List<Transaction>,
+            Boolean> transactionsList, final Transaction t) {
 
-    public Transaction targetTransaction(List<Transaction> transactions,
-                                             String splitPaymentType,
-                                             List<String> ibanInvolved) {
-        if (transactions == null || ibanInvolved == null) {
-            return null;
-        }
-
-        return transactions.stream()
-                .filter(t -> t.getSplitType() != null &&
-                        splitPaymentType.equals(t.getSplitType()) &&
-                        t.getInvolvedAccounts() != null &&  // Verifică dacă lista nu este null
-                        t.getInvolvedAccounts().size() == ibanInvolved.size() &&
-                        t.getInvolvedAccounts().containsAll(ibanInvolved))
-                .findFirst()
-                .orElse(null);
-
-    }
-
-    public static List<Transaction> findTransactionList(Map<List<Transaction>, Boolean> transactionsList, Transaction t) {
         for (Map.Entry<List<Transaction>, Boolean> entry : transactionsList.entrySet()) {
             List<Transaction> transactions = entry.getKey();
-            // Căutăm tranzacția t în lista de tranzacții
+
             if (transactions.contains(t)) {
-                return transactions; // Returnăm lista în care se află tranzacția t
+                return transactions;
             }
         }
-        return null; // Dacă tranzacția nu a fost găsită
+        return null;
     }
-
 }

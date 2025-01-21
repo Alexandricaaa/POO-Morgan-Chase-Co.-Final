@@ -1,4 +1,4 @@
-package org.poo.bank.commands.businessReport;
+package org.poo.bank.commands.reports.businessReport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -10,59 +10,53 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class BusinessRepTransaction implements ReportStrategy{
+public class BusinessRepTransaction implements ReportStrategy {
 
-    Bank bank;
-    public BusinessRepTransaction(Bank bank) {
+    private final Bank bank;
+    public BusinessRepTransaction(final Bank bank) {
         this.bank = bank;
     }
 
     @Override
-    public void generateReport(CommandInput command, ArrayNode output, ObjectMapper objectMapper) {
+    public void generateReport(final CommandInput command,
+                               final ArrayNode output, final ObjectMapper objectMapper) {
+
         Account account = bank.findAccountByIBAN(command.getAccount());
         if (account == null) {
-            return; // Contul nu a fost găsit
+            return;
         }
 
-        // Creează nodul principal pentru raport
-        ObjectNode node = Node.createBusinessReportNode(command, account, objectMapper, "transaction");
-
-        // Pregătește structuri pentru manageri și angajați
+        ObjectNode node = Node.createBusinessReportNode(command, account,
+                objectMapper, "transaction");
         ArrayNode managersArray = objectMapper.createArrayNode();
         ArrayNode employeesArray = objectMapper.createArrayNode();
         double totalSpentByEmployees = 0.0;
         double totalDepositedByEmployees = 0.0;
 
-        // Găsește utilizatorii asociați IBAN-ului
-
         List<User> employees = bank.getBusinessUsersPerAcc().get(command.getAccount());
-        if(employees!=null) {
+        if (employees != null) {
             Set<User> uniqueEmployees = new LinkedHashSet<>(employees);
-
 
             for (User u : uniqueEmployees) {
                 String role = u.getEmployeeRole().get(command.getAccount());
                 if (role == null || role.equals("owner")) {
-                    continue; // Ignorăm proprietarul sau lipsa rolului
+                    continue;
                 }
 
                 double spent = 0.0;
                 double deposited = 0.0;
 
-                // Creăm nod pentru utilizator
                 ObjectNode userNode = objectMapper.createObjectNode();
                 userNode.put("username", u.getLastName() + " " + u.getFirstName());
 
-                // Filtrăm tranzacțiile relevante
                 List<Transaction> transactions = u.getTrPerAcc()
                         .getOrDefault(command.getAccount(), new ArrayList<>())
                         .stream()
-                        .filter(t -> t.getTimestamp() >= command.getStartTimestamp() && t.getTimestamp() <= command.getEndTimestamp())
+                        .filter(t -> t.getTimestamp() >= command.getStartTimestamp()
+                                && t.getTimestamp() <= command.getEndTimestamp())
                         .toList();
 
-                // Calculăm sumele cheltuite și depuse
                 for (Transaction t : transactions) {
                     if (t.getSpent() != null) {
                         if (role.equals("employee") && t.getSpent() <= account.getSpendingLimit()) {
@@ -73,7 +67,8 @@ public class BusinessRepTransaction implements ReportStrategy{
                         }
                     }
                     if (t.getDeposited() != null) {
-                        if (role.equals("employee") && t.getDeposited() <= account.getDepositLimit()) {
+                        if (role.equals("employee") && t.getDeposited()
+                                <= account.getDepositLimit()) {
                             deposited += t.getDeposited();
                         }
                         if (role.equals("manager")) {
@@ -85,26 +80,21 @@ public class BusinessRepTransaction implements ReportStrategy{
                 userNode.put("spent", spent);
                 userNode.put("deposited", deposited);
 
-                // Adăugăm utilizatorul la manageri sau angajați
                 if ("manager".equals(role)) {
                     managersArray.add(userNode);
                 } else if ("employee".equals(role)) {
                     employeesArray.add(userNode);
                 }
-
                 totalSpentByEmployees += spent;
                 totalDepositedByEmployees += deposited;
             }
         }
 
-        // Setăm datele finale în nodul de output
         ObjectNode outputNode = (ObjectNode) node.get("output");
         outputNode.set("managers", managersArray);
         outputNode.set("employees", employeesArray);
         outputNode.put("total spent", totalSpentByEmployees);
         outputNode.put("total deposited", totalDepositedByEmployees);
-
-        // Adăugăm nodul în lista de ieșire
         output.add(node);
     }
 }
