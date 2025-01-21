@@ -45,6 +45,9 @@ public class User {
         }
     }
 
+    /**
+     * Calculates the User age
+     */
     public static int userAge(final String birthDate) {
         String[] parts = birthDate.split("-");
         int year = Integer.parseInt(parts[0]);

@@ -13,7 +13,9 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PrintTransactions implements CommandPattern {
-
+    /**
+     * print all the transactions made by an user
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

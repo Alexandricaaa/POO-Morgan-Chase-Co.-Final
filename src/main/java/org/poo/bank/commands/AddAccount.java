@@ -6,7 +6,9 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 public class AddAccount implements CommandPattern {
-
+    /**
+     * Adds an account to the user's array of accounts
+     */
     @Override
     public void execute(final CommandInput command,
                         final ObjectMapper obj,

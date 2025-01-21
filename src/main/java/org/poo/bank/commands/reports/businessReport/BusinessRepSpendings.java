@@ -8,6 +8,10 @@ import org.poo.fileio.CommandInput;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Shows every payment made by an associate to a commerciant
+ * with the business account
+ */
 public class BusinessRepSpendings implements ReportStrategy {
 
     private final Bank bank;
@@ -24,7 +28,8 @@ public class BusinessRepSpendings implements ReportStrategy {
             return;
         }
 
-        ObjectNode node = Node.createBusinessReportNode(command, account, objectMapper, "commerciant");
+        ObjectNode node = Node.createBusinessReportNode(command, account, objectMapper,
+                "commerciant");
 
         List<Commerciant> commPerAcc = bank.getCommerciantsPerAcc().get(command.getAccount());
         if (commPerAcc != null) {

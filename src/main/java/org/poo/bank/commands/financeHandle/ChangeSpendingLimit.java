@@ -9,6 +9,9 @@ import org.poo.bank.CommandPattern;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Changes the spending limit in a business account
+ */
 public class ChangeSpendingLimit implements CommandPattern {
 
     @Override

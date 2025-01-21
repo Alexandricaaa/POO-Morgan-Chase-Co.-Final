@@ -1,9 +1,13 @@
 package org.poo.bank;
+
 import lombok.Data;
 import org.poo.fileio.CommandInput;
 import org.poo.utils.Utils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class Account {
@@ -55,6 +59,9 @@ public class Account {
         this.accepted = false;
     }
 
+    /**
+     * Sets the plan Type to an account when it is created
+     */
     public static void planType(final Account account, final User user) {
         String plan = null;
         for (Account a : user.getAccounts()) {
@@ -75,6 +82,9 @@ public class Account {
         }
     }
 
+    /**
+     * Type of account
+     */
     public static void configureAccountByType(final Bank bank,
                                               final Account account,
                                               final User user,
@@ -92,6 +102,9 @@ public class Account {
         }
     }
 
+/**
+ * Configures the business account for a user
+ **/
     public static void configureBusinessAccount(final Bank bank,
                                                 final Account account,
                                                 final User user,

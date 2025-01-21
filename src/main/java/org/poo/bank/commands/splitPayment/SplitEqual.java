@@ -9,7 +9,12 @@ import java.util.Objects;
 
 public class SplitEqual {
 
-
+    /**
+     * Split the amount for the involved accounts
+     * @param obj
+     * @param command
+     * @param bank
+     */
     public void splitPayment(final ObjectMapper obj, final CommandInput command, final Bank bank) {
         Exchange exchange = new Exchange(bank);
         List<String> accountsSplit = command.getAccounts();

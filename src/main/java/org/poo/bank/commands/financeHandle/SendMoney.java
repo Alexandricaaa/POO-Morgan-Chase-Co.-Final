@@ -6,7 +6,17 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 
+/**
+ * Send money to a user or commerciant
+ */
 public class SendMoney implements CommandPattern {
+    /**
+     * Sends money to an user or commerciant
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

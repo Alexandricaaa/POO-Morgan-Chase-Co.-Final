@@ -5,7 +5,13 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 public class CashWithdrawal implements CommandPattern {
-
+    /**
+     *
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

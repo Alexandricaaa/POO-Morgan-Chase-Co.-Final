@@ -9,7 +9,9 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
 public class SetAlias implements CommandPattern {
-
+    /**
+     * Wraps an account with a name
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

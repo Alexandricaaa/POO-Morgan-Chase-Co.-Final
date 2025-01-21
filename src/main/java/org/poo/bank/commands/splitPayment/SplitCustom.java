@@ -16,6 +16,12 @@ public class SplitCustom {
     public SplitCustom(final Bank bank) {
         this.bank = bank;
     }
+
+    /**
+     *
+     * @param obj
+     * @param command
+     */
     public void splitPayment(final ObjectMapper obj, final CommandInput command) {
         List<String> accountsSplit = command.getAccounts();
         List<Double> amounts = command.getAmountForUsers();

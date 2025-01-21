@@ -3,12 +3,20 @@ package org.poo.bank;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.Data;
-import org.poo.fileio.*;
+import org.poo.fileio.CommandInput;
+import org.poo.fileio.ObjectInput;
+import org.poo.fileio.CommerciantInput;
+import org.poo.fileio.UserInput;
+import org.poo.fileio.ExchangeInput;
 import org.poo.utils.Utils;
 
 import java.util.*;
 import java.util.stream.IntStream;
 
+
+/**
+ * Handles the entry point logic for my Bank Project
+ */
 @Data
 public class Bank {
 
@@ -37,7 +45,11 @@ public class Bank {
             exchanges.add(myExchange);
         }
     }
-
+/**
+ * Processes the given command by creating the corresponding
+ * command object using the factory,
+ * and then executing the command if it is valid.
+ **/
     public void processCommand(final CommandInput cmd,
                                final ArrayNode output,
                                final ObjectMapper obj) {
@@ -47,6 +59,12 @@ public class Bank {
         }
     }
 
+    /**
+     *
+     * @param user
+     * @param iban
+     * @return
+     */
     public Account findAccount(final User user, final String iban) {
         for (Account account : user.getAccounts()) {
             if (account.getAccount().equals(iban)) {
@@ -56,6 +74,11 @@ public class Bank {
         return null;
     }
 
+    /**
+     * Finds the instance of an Account using IBAN
+     * @param iban
+     * @return
+     */
     public Account findAccountByIBAN(final String iban) {
         for (User u : this.getUsers().values()) {
             for (Account acc : u.getAccounts()) {
@@ -67,6 +90,9 @@ public class Bank {
         return null;
     }
 
+    /**
+     * finds the email of the user
+     */
     public String getEmailForAccountIBAN(final String iban) {
         for (User u : users.values()) {
             for (Account acc : u.getAccounts()) {
@@ -78,6 +104,9 @@ public class Bank {
         return null;
     }
 
+    /**
+     * Finds the account based on given card number
+     */
     public Account getAccountUsingCardNumber(final String cardNumber) {
         for (User u : users.values()) {
             for (Account acc : u.getAccounts()) {
@@ -91,6 +120,12 @@ public class Bank {
         return null;
     }
 
+    /**
+     *
+     * @param user
+     * @param iban
+     * @return
+     */
     public boolean isMyAccount(final User user, final String iban) {
         for (Account acc : user.getAccounts()) {
             if (acc.getAccount().equals(iban)) {
@@ -100,6 +135,9 @@ public class Bank {
         return false;
     }
 
+    /**
+     * Finds a card in the card list associated with the account
+     */
     public static Card findCardInAccount(final Account account, final CommandInput command) {
         return account.getCards().stream()
                 .filter(card -> card.getCardNumber().equals(command.getCardNumber()))
@@ -107,6 +145,10 @@ public class Bank {
                 .orElse(null);
     }
 
+    /**
+     * Verifies if the Upgrade command can be processed, it cannot be done a
+     * downgrade to the current plan
+     */
     public static boolean isUpgrade(final String currentPlan, final String newPlan) {
         List<String> plans = Arrays.asList("standard", "student", "silver", "gold");
 
@@ -123,10 +165,18 @@ public class Bank {
         return newIndex > currentIndex;
     }
 
+    /**
+     * updates the plan
+     * @param user
+     * @param newPlan
+     */
     public void updateAccountPlan(final User user, final String newPlan) {
         user.getAccounts().forEach(account -> account.setPlanType(newPlan));
     }
 
+    /**
+     * Finds a Transaction List in a Map
+     */
     public static List<Transaction> findTransactionList(final Map<List<Transaction>,
             Boolean> transactionsList, final Transaction t) {
 

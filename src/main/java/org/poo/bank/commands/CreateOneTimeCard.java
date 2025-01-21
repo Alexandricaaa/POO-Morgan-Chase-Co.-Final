@@ -6,6 +6,13 @@ import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
 public class CreateOneTimeCard implements CommandPattern {
+    /**
+     * creates an one time card
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command,
                         final ObjectMapper obj,

@@ -335,6 +335,9 @@ public final class Transaction {
         }
     }
 
+    /**
+     * creates a formatted arraynode for the output
+     */
     public static  ObjectNode createTransactionOutputNode(final ObjectMapper objectMapper,
                                                           final Transaction transaction) {
         ObjectNode transactionNode = objectMapper.createObjectNode();

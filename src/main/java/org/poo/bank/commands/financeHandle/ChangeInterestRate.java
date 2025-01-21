@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.poo.bank.*;
 import org.poo.fileio.CommandInput;
 
+/**
+ * Changes the interest Rate in a savings Account
+ */
 public class ChangeInterestRate implements CommandPattern {
 
     @Override

@@ -9,6 +9,9 @@ import org.poo.bank.CommandPattern;
 import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
+/**
+ *  Changes the deposit limit in a business account
+ */
 public class ChangeDepositLimit implements CommandPattern {
 
     @Override

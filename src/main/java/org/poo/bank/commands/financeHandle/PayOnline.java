@@ -7,10 +7,20 @@ import org.poo.fileio.CommandInput;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * make a transaction to a commerciant
+ */
 public class PayOnline implements CommandPattern {
     private static final int GOLD = 300;
     private static final int DIVIDE = 100;
 
+    /**
+     *
+     * @param command
+     * @param obj
+     * @param output
+     * @param bank
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

@@ -9,7 +9,9 @@ import org.poo.bank.User;
 import org.poo.fileio.CommandInput;
 
 public class PrintUsers implements CommandPattern {
-
+    /**
+     * Shows all the bank users
+     */
     @Override
     public void execute(final CommandInput command, final ObjectMapper obj,
                         final ArrayNode output, final Bank bank) {

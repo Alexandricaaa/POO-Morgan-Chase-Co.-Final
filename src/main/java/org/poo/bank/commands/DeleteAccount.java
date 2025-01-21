@@ -8,7 +8,9 @@ import org.poo.fileio.CommandInput;
 import java.util.Iterator;
 
 public class DeleteAccount implements CommandPattern {
-
+    /**
+     * deletes an account if the balance is 0
+     */
     @Override
     public void execute(final CommandInput command,
                         final ObjectMapper obj,
