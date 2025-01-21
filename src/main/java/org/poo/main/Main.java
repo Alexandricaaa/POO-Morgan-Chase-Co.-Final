@@ -80,7 +80,7 @@ public final class Main {
 
         Bank bank = new Bank(inputData);
 
-        for(CommandInput command : inputData.getCommands()){
+        for (CommandInput command : inputData.getCommands()) {
             bank.processCommand(command, output, objectMapper);
         }
 

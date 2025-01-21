@@ -131,32 +131,32 @@ public class Transaction {
         private Boolean alreadyProcessed;
 
 
-        public TransactionBuilder ignore(final Boolean ignore) {
-            this.ignore = ignore;
+        public TransactionBuilder ignore(final Boolean ignored) {
+            this.ignore = ignored;
             return this;
         }
-        public TransactionBuilder deposited(final  Double deposited) {
-            this.deposited = deposited;
-            return this;
-        }
-
-        public TransactionBuilder spent(final  Double spent) {
-            this.spent = spent;
+        public TransactionBuilder deposited(final  Double depositedSum) {
+            this.deposited = depositedSum;
             return this;
         }
 
-        public TransactionBuilder amountEqual(final  double amountEqual) {
-            this.amountEqual = amountEqual;
+        public TransactionBuilder spent(final  Double spentSum) {
+            this.spent = spentSum;
             return this;
         }
 
-        public TransactionBuilder findSplitAcc(final  String findSplitAcc) {
-            this.findSplitAcc = findSplitAcc;
+        public TransactionBuilder amountEqual(final  double amount) {
+            this.amountEqual = amount;
             return this;
         }
 
-        public TransactionBuilder error(final  String error){
-            this.error = error;
+        public TransactionBuilder findSplitAcc(final  String find) {
+            this.findSplitAcc = find;
+            return this;
+        }
+
+        public TransactionBuilder error(final  String err){
+            this.error = err;
             return this;
         }
         public TransactionBuilder amountToSplit(final  double amount){
@@ -174,71 +174,71 @@ public class Transaction {
             return this;
         }
 
-        public TransactionBuilder amounts(final  List<Double> amounts) {
-            this.amounts = amounts;
+        public TransactionBuilder amounts(final  List<Double> sum) {
+            this.amounts = sum;
             return this;
         }
 
-        public TransactionBuilder findTransaction(final  String findTransaction) {
-            this.findTransaction = findTransaction;
+        public TransactionBuilder findTransaction(final  String find) {
+            this.findTransaction = find;
             return this;
         }
 
-        public TransactionBuilder accountIBAN(final  String accountIBAN) {
-            this.accountIBAN = accountIBAN;
+        public TransactionBuilder accountIBAN(final  String account) {
+            this.accountIBAN = account;
             return this;
         }
 
-        public TransactionBuilder commerciant(final  String commerciant) {
-            this.commerciant = commerciant;
+        public TransactionBuilder commerciant(final  String comm) {
+            this.commerciant = comm;
             return this;
         }
 
-        public TransactionBuilder amountWithCurrency(final String amountWithCurrency) {
-            this.amountWithCurrency = amountWithCurrency;
+        public TransactionBuilder amountWithCurrency(final String amount) {
+            this.amountWithCurrency = amount;
             return this;
         }
 
-        public TransactionBuilder transferType(final String transferType) {
-            this.transferType = transferType;
+        public TransactionBuilder transferType(final String transfer) {
+            this.transferType = transfer;
             return this;
         }
-        public TransactionBuilder sender(final String sender) {
-            this.sender = sender;
+        public TransactionBuilder sender(final String s) {
+            this.sender = s;
             return this;
         }
-        public TransactionBuilder receiver(final String receiver) {
-            this.receiver = receiver;
-            return this;
-        }
-
-        public TransactionBuilder newPlanType(final String newPlanType) {
-            this.newPlanType = newPlanType;
+        public TransactionBuilder receiver(final String rec) {
+            this.receiver = rec;
             return this;
         }
 
-        public TransactionBuilder currency(final String currency) {
-            this.currency = currency;
+        public TransactionBuilder newPlanType(final String newType) {
+            this.newPlanType = newType;
             return this;
         }
 
-        public TransactionBuilder cardNumber(final String cardNumber) {
-            this.cardNumber = cardNumber;
+        public TransactionBuilder currency(final String curr) {
+            this.currency = curr;
             return this;
         }
 
-        public TransactionBuilder cardOwner(final String cardOwner) {
-            this.cardOwner = cardOwner;
+        public TransactionBuilder cardNumber(final String cardN) {
+            this.cardNumber = cardN;
             return this;
         }
 
-        public TransactionBuilder amount(final Double amount) {
-            this.amount = amount;
+        public TransactionBuilder cardOwner(final String card) {
+            this.cardOwner = card;
             return this;
         }
 
-        public TransactionBuilder savingsAccount(final String savingsAccount) {
-            this.savingsAccount = savingsAccount;
+        public TransactionBuilder amount(final Double sum) {
+            this.amount = sum;
+            return this;
+        }
+
+        public TransactionBuilder savingsAccount(final String savings) {
+            this.savingsAccount = savings;
             return this;
         }
 
@@ -247,24 +247,24 @@ public class Transaction {
             return this;
         }
 
-        public TransactionBuilder account(final String account) {
-            this.account = account;
+        public TransactionBuilder account(final String acc) {
+            this.account = acc;
             return this;
         }
-        public TransactionBuilder description(final String description) {
-            this.description = description;
+        public TransactionBuilder description(final String desc) {
+            this.description = desc;
             return this;
         }
-        public TransactionBuilder email(final String email) {
-            this.email = email;
+        public TransactionBuilder email(final String mail) {
+            this.email = mail;
             return this;
         }
-        public TransactionBuilder command(final String command) {
-            this.command = command;
+        public TransactionBuilder command(final String c) {
+            this.command = c;
             return this;
         }
-        public TransactionBuilder timestamp(final int timestamp) {
-            this.timestamp = timestamp;
+        public TransactionBuilder timestamp(final int time) {
+            this.timestamp = time;
             return this;
         }
         public Transaction build() {
@@ -298,27 +298,27 @@ public class Transaction {
         if (transaction.getAccount() != null) {
             transactionNode.put("account", transaction.getAccount());
         }
-        if(transaction.getCommerciant() != null) {
+        if (transaction.getCommerciant() != null) {
             transactionNode.put("commerciant", transaction.getCommerciant());
         }
-        if(transaction.getAmountWithCurrency() != null) {
+        if (transaction.getAmountWithCurrency() != null) {
             transactionNode.put("amount", transaction.getAmountWithCurrency());
         }
-        if(transaction.getAccountIBAN() != null) {
+        if (transaction.getAccountIBAN() != null) {
             transactionNode.put("accountIBAN", transaction.getAccountIBAN());
         }
 
-        if(transaction.getNewPlanType() != null) {
+        if (transaction.getNewPlanType() != null) {
             transactionNode.put("newPlanType", transaction.getNewPlanType());
         }
-        if(transaction.getCurrency() != null) {
+        if (transaction.getCurrency() != null) {
             transactionNode.put("currency", transaction.getCurrency());
         }
 
-        if(transaction.getSplitType() != null) {
+        if (transaction.getSplitType() != null) {
             transactionNode.put("splitPaymentType", transaction.getSplitType());
         }
-        if(transaction.getError() != null) {
+        if (transaction.getError() != null) {
             transactionNode.put("error", transaction.getError());
         }
         if (transaction.getAmounts() != null) {
@@ -331,10 +331,10 @@ public class Transaction {
             transaction.getAccountSplit().forEach(accSplitArray::add);
             transactionNode.set("involvedAccounts", accSplitArray);
         }
-        if(transaction.getSavingsAccount() != null) {
+        if (transaction.getSavingsAccount() != null) {
             transactionNode.put("savingsAccountIBAN", transaction.getSavingsAccount());
         }
-        if(transaction.getClassicAccount() != null) {
+        if (transaction.getClassicAccount() != null) {
             transactionNode.put("classicAccountIBAN", transaction.getClassicAccount());
         }
 
