@@ -40,7 +40,7 @@ public class BuildOneTransaction {
     }
 
     public static void addTransactionForWithdrawal(final CommandInput command,
-                                                   final User user, final String savings,
+                                                   final User user, final  String savings,
                                                    final String classicAcc) {
         Transaction tr = new Transaction.TransactionBuilder()
                 .timestamp(command.getTimestamp())

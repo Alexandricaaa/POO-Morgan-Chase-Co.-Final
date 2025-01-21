@@ -131,143 +131,139 @@ public class Transaction {
         private Boolean alreadyProcessed;
 
 
-        public TransactionBuilder alreadyProcessed(Boolean isFalse) {
-            this.alreadyProcessed = isFalse;
-            return this;
-        }
-        public TransactionBuilder ignore(Boolean ignore) {
+        public TransactionBuilder ignore(final Boolean ignore) {
             this.ignore = ignore;
             return this;
         }
-        public TransactionBuilder deposited(Double deposited) {
+        public TransactionBuilder deposited(final  Double deposited) {
             this.deposited = deposited;
             return this;
         }
 
-        public TransactionBuilder spent(Double spent) {
+        public TransactionBuilder spent(final  Double spent) {
             this.spent = spent;
             return this;
         }
 
-        public TransactionBuilder amountEqual(double amountEqual) {
+        public TransactionBuilder amountEqual(final  double amountEqual) {
             this.amountEqual = amountEqual;
             return this;
         }
 
-        public TransactionBuilder findSplitAcc(String findSplitAcc) {
+        public TransactionBuilder findSplitAcc(final  String findSplitAcc) {
             this.findSplitAcc = findSplitAcc;
             return this;
         }
 
-        public TransactionBuilder error(String error){
+        public TransactionBuilder error(final  String error){
             this.error = error;
             return this;
         }
-        public TransactionBuilder amountToSplit(double amount){
+        public TransactionBuilder amountToSplit(final  double amount){
             this.amountToSplit = amount;
             return this;
         }
 
-        public TransactionBuilder accountSplit(List<String> l){
+        public TransactionBuilder accountSplit(final  List<String> l){
             this.accountSplit = l;
             return this;
         }
 
-        public TransactionBuilder splitType(String pay){
+        public TransactionBuilder splitType(final  String pay){
             this.splitType = pay;
             return this;
         }
 
-        public TransactionBuilder amounts(List<Double> amounts) {
+        public TransactionBuilder amounts(final  List<Double> amounts) {
             this.amounts = amounts;
             return this;
         }
 
-        public TransactionBuilder findTransaction(String findTransaction) {
+        public TransactionBuilder findTransaction(final  String findTransaction) {
             this.findTransaction = findTransaction;
             return this;
         }
 
-        public TransactionBuilder accountIBAN(String accountIBAN) {
+        public TransactionBuilder accountIBAN(final  String accountIBAN) {
             this.accountIBAN = accountIBAN;
             return this;
         }
 
-        public TransactionBuilder commerciant(String commerciant) {
+        public TransactionBuilder commerciant(final  String commerciant) {
             this.commerciant = commerciant;
             return this;
         }
 
-        public TransactionBuilder amountWithCurrency(String amountWithCurrency) {
+        public TransactionBuilder amountWithCurrency(final String amountWithCurrency) {
             this.amountWithCurrency = amountWithCurrency;
             return this;
         }
 
-        public TransactionBuilder transferType(String transferType) {
+        public TransactionBuilder transferType(final String transferType) {
             this.transferType = transferType;
             return this;
         }
-        public TransactionBuilder sender(String sender) {
+        public TransactionBuilder sender(final String sender) {
             this.sender = sender;
             return this;
         }
-        public TransactionBuilder receiver(String receiver) {
+        public TransactionBuilder receiver(final String receiver) {
             this.receiver = receiver;
             return this;
         }
 
-        public TransactionBuilder newPlanType(String newPlanType) {
+        public TransactionBuilder newPlanType(final String newPlanType) {
             this.newPlanType = newPlanType;
             return this;
         }
 
-        public TransactionBuilder currency(String currency) {
+        public TransactionBuilder currency(final String currency) {
             this.currency = currency;
             return this;
         }
 
-        public TransactionBuilder cardNumber(String cardNumber) {
+        public TransactionBuilder cardNumber(final String cardNumber) {
             this.cardNumber = cardNumber;
             return this;
         }
 
-        public TransactionBuilder cardOwner(String cardOwner) {
+        public TransactionBuilder cardOwner(final String cardOwner) {
             this.cardOwner = cardOwner;
             return this;
         }
 
-        public TransactionBuilder amount(Double amount) {
+        public TransactionBuilder amount(final Double amount) {
             this.amount = amount;
             return this;
         }
 
-        public TransactionBuilder savingsAccount(String savingsAccount) {
+        public TransactionBuilder savingsAccount(final String savingsAccount) {
             this.savingsAccount = savingsAccount;
             return this;
         }
 
-        public TransactionBuilder classicAccount(String classicAccount) {
-            this.classicAccount = classicAccount;
+        public TransactionBuilder classicAccount(final String classic) {
+            this.classicAccount = classic;
             return this;
         }
 
-        public TransactionBuilder account(String account){
+        public TransactionBuilder account(final String account) {
             this.account = account;
             return this;
         }
-        public TransactionBuilder description(String description){
+        public TransactionBuilder description(final String description) {
             this.description = description;
             return this;
         }
-        public TransactionBuilder email(String email){
+        public TransactionBuilder email(final String email) {
             this.email = email;
             return this;
         }
-        public TransactionBuilder command(String command){
+        public TransactionBuilder command(final String command) {
             this.command = command;
             return this;
         }
-        public TransactionBuilder timestamp(int timestamp){
+        public TransactionBuilder timestamp(final int timestamp) {
             this.timestamp = timestamp;
             return this;
         }
@@ -276,12 +272,11 @@ public class Transaction {
         }
     }
 
-    public static  ObjectNode createTransactionOutputNode(ObjectMapper objectMapper, Transaction transaction) {
+    public static  ObjectNode createTransactionOutputNode(final ObjectMapper objectMapper, final Transaction transaction) {
         ObjectNode transactionNode = objectMapper.createObjectNode();
         transactionNode.put("timestamp", transaction.getTimestamp());
         transactionNode.put("description", transaction.getDescription());
 
-        // Adăugăm câmpuri opționale dacă sunt disponibile
         if (transaction.getSender() != null) {
             transactionNode.put("senderIBAN", transaction.getSender());
         }
@@ -303,27 +298,27 @@ public class Transaction {
         if (transaction.getAccount() != null) {
             transactionNode.put("account", transaction.getAccount());
         }
-        if(transaction.getCommerciant()!=null){
+        if(transaction.getCommerciant() != null) {
             transactionNode.put("commerciant", transaction.getCommerciant());
         }
-        if(transaction.getAmountWithCurrency()!=null){
+        if(transaction.getAmountWithCurrency() != null) {
             transactionNode.put("amount", transaction.getAmountWithCurrency());
         }
-        if(transaction.getAccountIBAN()!=null){
+        if(transaction.getAccountIBAN() != null) {
             transactionNode.put("accountIBAN", transaction.getAccountIBAN());
         }
 
-        if(transaction.getNewPlanType()!=null){
+        if(transaction.getNewPlanType() != null) {
             transactionNode.put("newPlanType", transaction.getNewPlanType());
         }
-        if(transaction.getCurrency()!=null){
+        if(transaction.getCurrency() != null) {
             transactionNode.put("currency", transaction.getCurrency());
         }
 
-        if(transaction.getSplitType()!=null){
+        if(transaction.getSplitType() != null) {
             transactionNode.put("splitPaymentType", transaction.getSplitType());
         }
-        if(transaction.getError()!=null){
+        if(transaction.getError() != null) {
             transactionNode.put("error", transaction.getError());
         }
         if (transaction.getAmounts() != null) {
@@ -336,223 +331,16 @@ public class Transaction {
             transaction.getAccountSplit().forEach(accSplitArray::add);
             transactionNode.set("involvedAccounts", accSplitArray);
         }
-        if(transaction.getSavingsAccount()!=null){
+        if(transaction.getSavingsAccount() != null) {
             transactionNode.put("savingsAccountIBAN", transaction.getSavingsAccount());
         }
-        if(transaction.getClassicAccount()!=null){
+        if(transaction.getClassicAccount() != null) {
             transactionNode.put("classicAccountIBAN", transaction.getClassicAccount());
         }
 
         return transactionNode;
     }
 
-
-    public static void error(CommandInput command, User user, String description){
-        Transaction transaction = new Transaction.TransactionBuilder()
-                .timestamp(command.getTimestamp())
-                .description(description)
-                .build();
-
-        user.getTransactions().add(transaction);
-
-    }
-
-    public static void messageValidAcc(CommandInput command, User user, String description, String iban){
-        Transaction transaction = new Transaction.TransactionBuilder()
-                .timestamp(command.getTimestamp())
-                .description(description)
-                .build();
-
-        user.getTransactions().add(transaction);
-        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(transaction);
-    }
-
-    public static void invalidAccType(CommandInput command, User user,  String error){
-        Transaction t = new Transaction.TransactionBuilder()
-                .description(error)
-                .timestamp(command.getTimestamp())
-                .account(command.getAccount())
-                .build();
-        user.getTransactions().add(t);
-
-    }
-
-
-    public static void addTransactionForWithdrawal(CommandInput command, User user,String savings, String classicAcc){
-        Transaction tr = new Transaction.TransactionBuilder()
-                .timestamp(command.getTimestamp())
-                .description("Savings withdrawal")
-                .savingsAccount(savings)
-                .classicAccount(classicAcc)
-                .amount(command.getAmount())
-                .build();
-        user.getTransactions().add(tr);
-        user.getTrPerAcc().computeIfAbsent(savings, k -> new ArrayList<>()).add(tr);
-
-        Transaction copy = new Transaction.TransactionBuilder()
-                .timestamp(command.getTimestamp())
-                .description("Savings withdrawal")
-                .savingsAccount(savings)
-                .classicAccount(classicAcc)
-                .amount(command.getAmount())
-                .build();
-        user.getTransactions().add(copy);
-        user.getTrPerAcc().computeIfAbsent(classicAcc, k -> new ArrayList<>()).add(tr);
-    }
-
-    public static void deposit(CommandInput command, User user){
-        Transaction t = new Transaction.TransactionBuilder()
-                .email(user.getEmail())
-                .account(command.getAccount())
-                .timestamp(command.getTimestamp())
-                .deposited(command.getAmount())
-                .ignore(true)
-                .build();
-        user.getTransactions().add(t);
-        String accountIBAN = command.getAccount();
-
-        user.getTrPerAcc().computeIfAbsent(accountIBAN, k -> new ArrayList<>()).add(t);
-
-    }
-
-    public static void card(CommandInput command, User user, Card card, String description, String iban){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(command.getTimestamp())
-                .description(description)
-                .cardNumber(card.getCardNumber())
-                .cardOwner(command.getEmail())
-                .account(iban)
-                .build();
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(t);
-    }
-
-    public static void addInterest(CommandInput c, User user, Account a, double amount){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .description("Interest rate income")
-                .currency(a.getCurrency())
-                .amount(amount)
-                .build();
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
-    }
-
-    public static void amountInDescription(CommandInput c, User user, String description){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .description(description)
-                .amount(c.getAmount())
-                .build();
-
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
-    }
-    public static void interestChange(CommandInput c, User user, String description){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .description(description)
-                .build();
-
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
-    }
-
-    public static void cardPayment(CommandInput c, User user, double amount, String commerciant, String iban){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .description("Card payment")
-                .amount(amount)
-                .findTransaction(iban)
-                .commerciant(commerciant)
-                .spent(amount)
-                .build();
-
-        user.getTransactions().add(t);
-
-
-        user.getTrPerAcc().computeIfAbsent(iban, k -> new ArrayList<>()).add(t);
-    }
-
-    public static void upgradePlan(CommandInput c, User user, String newPlanType, String iban){
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .description("Upgrade plan")
-                .newPlanType(newPlanType)
-                .accountIBAN(iban)
-                .build();
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(c.getAccount(), k -> new ArrayList<>()).add(t);
-    }
-
-    public static void receivedMoney(CommandInput c, User user, double amount,Account receiver, Account sender){
-
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .amountWithCurrency(amount + " " +  receiver.getCurrency())
-                .description(c.getDescription())
-                .sender(sender.getAccount())
-                .receiver(receiver.getAccount())
-                .transferType("received")
-                .build();
-        user.getTransactions().add(t);
-        user.getTrPerAcc().computeIfAbsent(receiver.getAccount(), k -> new ArrayList<>()).add(t);
-
-    }
-
-    public static void sentMoney(CommandInput c, User user, double amount,String receiver, Account sender){
-
-        if(sender == null){
-            return;
-        }
-        Transaction t = new Transaction.TransactionBuilder()
-                .timestamp(c.getTimestamp())
-                .amountWithCurrency(amount + " " +  sender.getCurrency())
-                .description(c.getDescription())
-                .sender(sender.getAccount())
-                .receiver(receiver)
-                .transferType("sent")
-                .spent(amount)
-                .build();
-
-        user.getTransactions().add(t);
-        String accountIBAN = c.getAccount();
-
-        user.getTrPerAcc().computeIfAbsent(accountIBAN, k -> new ArrayList<>()).add(t);
-
-    }
-    public static void splitCustom(CommandInput c, User user, String description, List<String> acc, Account a, List<Double> listAmount, double amount){
-
-        Transaction t = new Transaction.TransactionBuilder()
-                .findSplitAcc(a.getAccount())
-                .currency(c.getCurrency())
-                .amounts(listAmount)
-                .timestamp(c.getTimestamp())
-                .splitType("custom")
-                .description(description)
-                .accountSplit(acc)
-                .amountToSplit(amount)
-                .build();
-        user.getTransactions().add(t);
-
-    }
-    public static void splitEqual(CommandInput c, User user, String description, List<String> acc, Account a, double amount, String err){
-
-        Transaction t = new Transaction.TransactionBuilder()
-                .findSplitAcc(a.getAccount())
-                .currency(c.getCurrency())
-                .timestamp(c.getTimestamp())
-                .splitType("equal")
-                .description(description)
-                .accountSplit(acc)
-                .amountEqual(amount)
-                .amount(c.getAmount()/acc.size())
-                .error(err)
-                .build();
-
-        user.getTransactions().add(t);
-
-    }
 
 
 }
