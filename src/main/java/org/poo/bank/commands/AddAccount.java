@@ -20,9 +20,13 @@ public class AddAccount implements CommandPattern {
 
         Account newAccount = new Account(command);
 
+
         Account.PlanType(newAccount, user);
         Account.configureAccountByType(bank, newAccount, user, command);
         user.getAccounts().add(newAccount);
         Transaction.messageValidAcc(command,user,"New account created", newAccount.getAccount());
+        if(user.getPlanType()!=null){
+            newAccount.setPlanType(user.getPlanType());
+        }
     }
 }

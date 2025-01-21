@@ -18,6 +18,7 @@ public class User {
     private String occupation;
     private String plan;
     private String role;
+    private String planType;
 
     private boolean rejected = false;
 

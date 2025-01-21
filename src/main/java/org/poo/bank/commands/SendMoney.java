@@ -75,12 +75,19 @@ public class SendMoney implements CommandPattern {
         cashback = exchange.findExchangeRate("RON", sender.getCurrency()) * cashback;
         double total = command.getAmount() + commissionInCurr - cashback;
 
+        System.out.println("planType " + sender.getPlanType());
+        System.out.println("commission " + commissionInCurr);
+        System.out.println("cashback " + cashback);
+        System.out.println("totalcashBack " + sender.getThresholdAmount());
+
+
         if(sender.getBalance() < total){
             Transaction.error(command, user, "Insufficient funds");
             return;
         }
 
         sender.setBalance(sender.getBalance() - total);
+        System.out.println("newBalance "  + sender.getBalance());
 
         if(sendToComm == null){
             double receivedAmount = command.getAmount() * exchange.findExchangeRate(sender.getCurrency(), receiver.getCurrency());

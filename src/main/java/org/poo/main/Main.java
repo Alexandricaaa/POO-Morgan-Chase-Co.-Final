@@ -57,7 +57,7 @@ public final class Main {
             boolean isCreated = out.createNewFile();
             if (isCreated) {
 
-                if(file.getName().equals("test20_large_input_part3.json"))
+                //if(file.getName().equals("test20_large_input_part3.json"))
                 action(file.getName(), filepath);
             }
         }

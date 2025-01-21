@@ -27,19 +27,26 @@ public class DeleteAccount implements CommandPattern {
             return;
         }
 
+
         boolean accountDeleted = false;
 
         Iterator<Account> iterator = user.getAccounts().iterator();
-
+        String plan = null;
         while (iterator.hasNext()) {
             Account account = iterator.next();
             if (account.getAccount().equals(command.getAccount())) {
                 if (account.getBalance() == 0) {
+                    plan = account.getPlanType();
                     account.getCards().clear();
                     iterator.remove();
                     accountDeleted = true;
                     break;
                 }
+            }
+        }
+        if(user.getAccounts().isEmpty()){
+            if(plan!=null) {
+                user.setPlanType(plan);
             }
         }
 
